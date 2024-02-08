@@ -1,0 +1,46 @@
+/* --------------  DNA replication styles  --------  */
+
+.enz  { 
+  width: 19%;
+}
+
+.enz:hover  { 
+  box-shadow: 2px 2px;
+  text-shadow: 2px 2px 4px grey;
+}
+
+.myList {
+  overflow: auto;
+  height: 100vh;
+}
+
+.pressed {
+  border: 5px solid #007bff;
+}
+
+#process .pressed {
+  box-shadow: none;
+  border: none;
+  background-color: #007bff;
+  color: white;
+}
+
+.blocked {
+  pointer-events: none;
+}
+
+#clicks {
+  margin-left: 4vw;
+  margin-right: 4vw;
+  margin-bottom: 3vh;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  text-align: center;
+  height: 2.5em;
+  padding: 0.5em;
+  font-size: 1.2em;
+  position: fixed;
+  bottom: 5vh;
+  right: -1vw;
+  z-index: 2;
+}
