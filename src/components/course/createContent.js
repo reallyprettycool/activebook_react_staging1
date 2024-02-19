@@ -5,12 +5,13 @@ import MultipleChoice from "./createContent/MultipleChoice";
 import TextImages from "./createContent/textImages";
 import OtherActivities from "./createContent/OtherActivities";
 import CreatedActivities from "./createContent/CreatedActivities";
+import DragAndDrop from "./createContent/dragAndDrop/DragAndDrop";
 class CreateContent extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      whatToShow: "",
+      whatToShow: "dragAndDrop",
     };
   }
 
@@ -35,56 +36,44 @@ class CreateContent extends Component {
         return <OtherActivities />;
       case "createdActivities":
         return <CreatedActivities />;
+      case "dragAndDrop":
+        return <DragAndDrop />;
       default:
         return <CreatedActivities />;
     }
   };
+
+  tabList = [
+    { name: "Created Activities", value: "createdActivities" },
+    { name: "Text And Images", value: "textImages" },
+    { name: "Multiple Choice", value: "multipleChoice" },
+    { name: "Drag and Drop", value: "dragAndDrop" },
+    { name: "H5P", value: "h5p" },
+    { name: "Other Activities", value: "otherActivities" },
+  ]
+
   render() {
     return (
       <div>
         <nav
           className="col-6"
           aria-label="Page navigation example"
-          style={{ backgroundColor: "#ffffff" }}
-        >
+          style={{ backgroundColor: "#ffffff" }}>
           <ul className="pagination">
-            <li className="page-item">
-              <a
-                className="page-link"
-                onClick={() => this.showItem("createdActivities")}
-              >
-                Created Activities
-              </a>
-            </li>
-            <li className="page-item">
-              <a
-                className="page-link"
-                onClick={() => this.showItem("textImages")}
-              >
-                Text And Images
-              </a>
-            </li>
-            <li className="page-item">
-              <a
-                className="page-link"
-                onClick={() => this.showItem("multipleChoice")}
-              >
-                Multiple Choice
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" onClick={() => this.showItem("h5p")}>
-                H5P
-              </a>
-            </li>
-            <li className="page-item">
-              <a
-                className="page-link"
-                onClick={() => this.showItem("otherActivities")}
-              >
-                Other Activities
-              </a>
-            </li>
+              {
+                this.tabList.map((tab, index) => {
+                    return (
+                        <li key={index} className="page-item">
+                        <a
+                            className="page-link"
+                            onClick={() => this.showItem(tab.value)}
+                        >
+                            {tab.name}
+                        </a>
+                        </li>
+                    )
+                    })
+              }
           </ul>
         </nav>
         {this.renderForms()}
