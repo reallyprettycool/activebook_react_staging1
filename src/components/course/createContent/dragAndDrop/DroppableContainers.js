@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Droppable } from "react-beautiful-dnd";
+import "./dragAndDrop.css";
 
 class DroppableContainers extends Component {
     render() {
@@ -7,13 +8,12 @@ class DroppableContainers extends Component {
 
         return (
             <Droppable droppableId={this.props.droppableId}>
-                {(provided, snapshot) => (
+                {(provided) => (
                     <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                         className={className}
                     >
-                        <h3 className={'mb-auto'}>{this.props.title}</h3>
                         {this.props.children}
                         {provided.placeholder}
                     </div>
