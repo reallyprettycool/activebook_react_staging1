@@ -13,13 +13,17 @@ class AuthService {
   }
 
 
-signup = (email, password, confirm, firstname, lastname, pantherID ) => { 
+signup = (email, password, confirm, firstname, lastname, pantherID ) => {
+    console.log("signup service", email, password, confirm, firstname, lastname, pantherID)
     return this.service.post('/signup', {email, password, confirm, firstname, lastname, pantherID })
-    .then(response => response.data)
-      // .catch((err)=>{
-      //   console.log(err)
-      //   return err;
-      // })
+    .then(response => {
+      console.log("received response", response.data)
+      return response.data
+    })
+      .catch((err)=>{
+        console.log(err)
+        return err;
+      })
   }
 
   instructorSignup = (email, password, confirm, firstname, lastname, institution, title ) => {
@@ -27,10 +31,14 @@ signup = (email, password, confirm, firstname, lastname, pantherID ) => {
     .then(response => response.data)
   }
 
-// passport strategy requires an username to authenticate, you can give it the email as username
+// passport strategy requires a username to authenticate, you can give it the email as username
   login = (email, password) => {
+    console.log("login service", email, password)
     return this.service.post('/login', {username:email, password})
-    .then(response => response.data)
+    .then(response => {
+      console.log(response.data)
+      return response.data
+    })
     // .catch((err)=>{
     //   console.log(err)
     //   return err;

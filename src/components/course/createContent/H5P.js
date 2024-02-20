@@ -11,14 +11,11 @@ class H5P extends Component {
           aria-label="Prueba"
           width="1088"
           height="637"
-          frameborder="0"
-          allowfullscreen="allowfullscreen"
+          frameBorder="0"
+          allowFullScreen="allowfullscreen"
           allow="autoplay *; geolocation *; microphone *; camera *; midi *; encrypted-media *"
         ></iframe>
-        <script
-          src="https://elsik.h5p.com/js/h5p-resizer.js"
-          charset="UTF-8"
-        ></script>
+        <script src="https://elsik.h5p.com/js/h5p-resizer.js" charSet="UTF-8"></script>
       </div>
     );
   }

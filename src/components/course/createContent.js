@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import axios from "axios";
 import H5P from "./createContent/H5P";
 import MultipleChoice from "./createContent/MultipleChoice";
 import TextImages from "./createContent/textImages";
 import OtherActivities from "./createContent/OtherActivities";
 import CreatedActivities from "./createContent/CreatedActivities";
-import DragAndDrop from "./createContent/dragAndDrop/DragAndDrop";
+import DragAndDropCreation from "./createContent/dragAndDrop/DragAndDropCreation";
 class CreateContent extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +36,7 @@ class CreateContent extends Component {
       case "createdActivities":
         return <CreatedActivities />;
       case "dragAndDrop":
-        return <DragAndDrop />;
+        return <DragAndDropCreation />;
       default:
         return <CreatedActivities />;
     }
