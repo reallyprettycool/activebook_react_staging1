@@ -1,6 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
 import { Droppable } from "react-beautiful-dnd";
-import "./dragAndDrop.css";
 
 
 function DroppableContainers({ container, className, children, ...props}) {

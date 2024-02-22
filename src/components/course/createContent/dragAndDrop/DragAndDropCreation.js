@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import DroppableContainers from "./DroppableContainers";
 import DraggableItem from "./DraggableItem";
-import "../createContent.css"
-import "./dragAndDrop.css";
 import ToggleSwitch from "../../../utils/toggleSwitch/ToggleSwitch";
 import PreviewActivityModal from "../../../utils/previewActivty/PreviewActivityModal";
 import DragAndDropActivity from "../../../activities/created/dragAndDrop/DragAndDropActivity";
+import "../../../activities/created/dragAndDrop/DragAndDropActivity.css";
 
 class DragAndDropCreation extends Component {
     constructor(props) {
@@ -16,16 +15,69 @@ class DragAndDropCreation extends Component {
                 {
                     id: 1,
                     title: "Container 1"
+                },
+                {
+                    id: 2,
+                    title: "Container 2"
+                },
+                {
+                    id: 3,
+                    title: "Container 3"
+                },
+                {
+                    id: 4,
+                    title: "Container 4"
                 }
             ],
-            draggableItems: [],
+            draggableItems: [
+                {
+                    id: 1,
+                    content: "Item 1",
+                    parentId: 1
+                },
+                {
+                    id: 2,
+                    content: "Item 2",
+                    parentId: 1
+                },
+                {
+                    id: 3,
+                    content: "Item 3",
+                    parentId: 2
+                },
+                {
+                    id: 4,
+                    content: "Item 4",
+                    parentId: 2
+                },
+                {
+                    id: 5,
+                    content: "Item 5",
+                    parentId: 3
+                },
+                {
+                    id: 6,
+                    content: "Item 6",
+                    parentId: 3
+                },
+                {
+                    id: 7,
+                    content: "Item 7",
+                    parentId: 4
+                },
+                {
+                    id: 8,
+                    content: "Item 8",
+                    parentId: 4
+                }
+            ],
             newDraggable: {
                 content: "",
                 parentId: "0"
             },
             isOrdered: false,
-            displayPreview: true,
-            activityTitle: ""
+            displayPreview: false,
+            activityTitle: "Drag and Drop Activity"
         }
     }
 
@@ -55,25 +107,22 @@ class DragAndDropCreation extends Component {
         }
     };
 
-    addDraggable = (content, parentId) => {
-        // Check if both content and parentId are provided
-        if (content && parentId) {
+    addDraggable = (e) => {
+        e.preventDefault(); // Prevent default form submission behavior
+        const { newDraggable, draggableItems } = this.state; // Retrieve current newDraggable and draggableItems state
+        if (newDraggable.content && newDraggable.parentId !== "0") { // If the new draggable content is not empty and has a parent container
             const newDraggableItem = {
-                content: content,
-                parentId: parentId
+                id: draggableItems.length + 1,
+                content: newDraggable.content,
+                parentId: parseInt(newDraggable.parentId)
             };
-
-            // Update draggableItems state with the new draggable item
-            this.setState(prevState => ({
-                draggableItems: [...prevState.draggableItems, newDraggableItem],
-            }));
-
-            console.log("New draggable item added: ", newDraggableItem);
-        } else {
-            const error = "Content and parentId are required";
-            // do an alert
-            alert(error);
-            console.log(error);
+            this.setState({
+                draggableItems: [...draggableItems, newDraggableItem],
+                newDraggable: {
+                    content: "",
+                    parentId: "0"
+                }
+            });
         }
     };
 
@@ -212,6 +261,7 @@ class DragAndDropCreation extends Component {
                             droppableContainers={this.state.droppableContainers}
                             draggableItems={this.state.draggableItems}
                             isOrdered={this.state.isOrdered}
+                            activityTitle={this.state.activityTitle}
                         />
                     </PreviewActivityModal>
                 }

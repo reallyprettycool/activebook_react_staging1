@@ -14,18 +14,36 @@
 }
 
 .droppable{
-    min-height: 100px;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin: 5px;
+}
+.answer-container{
+    width: fit-content;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
 }
 
 .draggable{
-
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px;
+    margin: 5px;
 }
 
 .droppable-title{
+    width: 100%;
     text-align: center;
     margin-bottom: 10px;
     border: none;
