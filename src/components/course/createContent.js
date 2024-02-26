@@ -10,7 +10,7 @@ class CreateContent extends Component {
     super(props);
 
     this.state = {
-      whatToShow: "dragAndDrop",
+      whatToShow: "createdActivities",
     };
   }
 

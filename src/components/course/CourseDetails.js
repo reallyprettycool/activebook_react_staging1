@@ -24,7 +24,7 @@ class CourseDetails extends Component {
       theCourse: this.props.oneCourse,
       editCourse: false,
       addStudents: false,
-      whatToShow: "createContent", // Should be "showCourse" for production
+      whatToShow: "showCourse", // Should be "showCourse" for production
       theAssignment: {},
       loggedInUser: this.props.userInSession,
       redirect: false,
