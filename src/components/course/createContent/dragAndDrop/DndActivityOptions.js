@@ -76,8 +76,8 @@ const DndActivityOptions = (props) => {
                     <div className="col-5 d-flex flex-column justify-content-center align-items-center">
                         <DroppableContainers
                             className={'trash-bin'}
-                            droppableId={'trash-bin'}
-                            container={{id: 100, title: "Trash"}}>
+                            droppableId={'trash'}
+                            container={{id: 'trash', title: "trash"}}>
                             <p className="h3 ml-3 mr-3">
                                 Remove Draggable
                             </p>

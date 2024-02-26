@@ -75,72 +75,84 @@ class DragAndDropCreation extends Component {
           alert('Please update the draggable');
           return;
         }
-        // If dropped in the same container
-        if(source.droppableId === destination.droppableId) {
+
+        // If dropped in the same container -> not new draggable container
+        if(source.droppableId === destination.droppableId && source.droppableId !== 'New') {
             // move order of draggable items
-            this.setState({
-                droppableContainers: this.state.droppableContainers.map((container) => {
-                    if (container.id === parseInt(source.droppableId)) {
-                        const [removed] = container.draggableItems.splice(source.index, 1);
-                        container.draggableItems.splice(destination.index, 0, removed);
-                    }
-                    return container;
-                })
-            });
-        }else {
-            // If dropped in the trash bin
-            if (destination.droppableId === 'trash-bin') {
-                // if it comes from the extra answers
-                if(source.droppableId === "extraAnswers") {
-                    this.setState({
-                        extraAnswers: this.state.extraAnswers.filter((item, index) => index !== source.index)
-                    });
-                }else{
-                    // remove from current container
-                    this.setState({
-                        droppableContainers: this.state.droppableContainers.map((container) => {
-                            if (container.id === parseInt(source.droppableId)) {
-                                container.draggableItems.splice(source.index, 1);
-                            }
-                            return container;
-                        })
-                    });
-                }
-            } else {
-                // remove from current container
+            if(source.droppableId !== 'extraAnswers'){
                 this.setState({
                     droppableContainers: this.state.droppableContainers.map((container) => {
                         if (container.id === parseInt(source.droppableId)) {
-                            container.draggableItems.splice(source.index, 1);
+                            const [removed] = container.draggableItems.splice(source.index, 1);
+                            container.draggableItems.splice(destination.index, 0, removed);
                         }
                         return container;
                     })
                 });
-                // create new draggable item
-                const draggable = {
-                    content: result.draggableId
-                }
-                // if dropped in extra answers
+            }else{
+                // move order of extra answers
+                const [removed] = this.state.extraAnswers.splice(source.index, 1);
+                this.state.extraAnswers.splice(destination.index, 0, removed);
+                this.setState({extraAnswers: this.state.extraAnswers});
+            }
+        }else {
+            if(source.droppableId === 'New') {
+                const newDraggable = this.state.newDraggable;
                 if(destination.droppableId === 'extraAnswers') {
-                    this.setState({
-                        extraAnswers: [...this.state.extraAnswers, draggable]
-                    });
-                }else{
-                    // add to dropped container
+                    let updatedAnswers = this.state.extraAnswers;
+                    updatedAnswers.splice(destination.index, 0, newDraggable);
+                    this.setState({extraAnswers: updatedAnswers});
+                }else if (destination.droppableId === 'trash'){
+                    this.resetNewDraggable();
+                }else {
                     this.setState({
                         droppableContainers: this.state.droppableContainers.map((container) => {
                             if (container.id === parseInt(destination.droppableId)) {
-                                container.draggableItems.splice(destination.index, 0, draggable);
+                                container.draggableItems.splice(destination.index, 0, this.state.newDraggable);
                             }
                             return container;
                         })
                     });
-
                 }
-            }
-            // Reset the new draggable item if source is the new draggable
-            if(source.droppableId === 'New') {
-                this.resetNewDraggable()
+
+                this.resetNewDraggable();
+            }else if (source.droppableId === 'extraAnswers') {
+                if(destination.droppableId === 'trash'){
+                    this.setState({
+                        extraAnswers: this.state.extraAnswers.filter((item, index) => index !== source.index)
+                    });
+                }else {
+                    const [removed] = this.state.extraAnswers.splice(source.index, 1);
+
+                    this.setState({
+                        droppableContainers: this.state.droppableContainers.map((container) => {
+                            if (container.id === parseInt(destination.droppableId)) {
+                                container.draggableItems.splice(destination.index, 0, removed);
+                            }
+                            return container;
+                        })
+                    });
+                }
+            }else {
+                // remove draggable from container
+                const [removed] = this.state.droppableContainers.find(container => container.id === parseInt(source.droppableId)).draggableItems.splice(source.index, 1);
+
+                // add draggable to extra answers
+                if (destination.droppableId === 'extraAnswers') {
+                    let updatedExtraAnswers = this.state.extraAnswers;
+                    updatedExtraAnswers.splice(destination.index, 0, removed);
+                    this.setState({extraAnswers: updatedExtraAnswers})
+                } else {
+                    // add draggable to container
+                    this.setState({
+                        droppableContainers: this.state.droppableContainers.map((container) => {
+                            if (container.id === parseInt(destination.droppableId)) {
+                                container.draggableItems.splice(destination.index, 0, removed)
+                            }
+                            return container;
+                        })
+                    });
+                }
             }
         }
     }
@@ -192,6 +204,7 @@ class DragAndDropCreation extends Component {
                     </div>
                     <div className="row ml-sm-1  ml-xs-3">
                         <div className="w-100 h1 text-center">
+                            {/*  Activity Title  */}
                             <EditableInput
                                 placeholder={'Activity Title'}
                                 value={this.state.activityTitle}
@@ -204,12 +217,14 @@ class DragAndDropCreation extends Component {
                             <button className="container-btn m-2" onClick={this.addContainer}><span>+</span></button>
                         </div>
                         <div className="row m-auto d-flex flex-fill justify-content-center align-items-center">
+                        {/*     Show all droppable containers with appropriate draggables    */}
                         {this.state.droppableContainers.map((container) => {
                                 return (
                                     <div key={container.id} className="card p-2">
                                         <div className="card-title border-bottom h3">
                                             <div className="row justify-content-center align-items-center">
                                                 <div className="col-10">
+                                                    {/*     Allow for the title to be editable      */}
                                                     <EditableInput
                                                         placeholder={'Container Title'}
                                                         value={container.title}
@@ -234,6 +249,7 @@ class DragAndDropCreation extends Component {
                                                             className={'border border-dark draggable'}
                                                             draggableId={item.content}
                                                             index={index}>
+                                                            {/*     Allow for draggable to be edited    */}
                                                             <EditableInput
                                                                 placeholder={'Activity Title'}
                                                                 value={item.content}
@@ -249,6 +265,7 @@ class DragAndDropCreation extends Component {
                                     </div>
                                 );
                             })}
+                            {/*     Show the extra answers container if there are extra answers    */}
                             {
                                 this.state.hasExtraAnswers &&
                                 <div className="card p-2">
@@ -267,9 +284,14 @@ class DragAndDropCreation extends Component {
                                                         className={'border border-dark draggable'}
                                                         draggableId={item.content}
                                                         index={index}>
-                                                        <p className={'m-auto'}>
-                                                            {item.content}
-                                                        </p>
+                                                        {/*     Allow for draggable to be edited    */}
+                                                        <EditableInput
+                                                            placeholder={'Activity Title'}
+                                                            value={item.content}
+                                                            onSave={(value) => {
+                                                                this.state.extraAnswers[index].content = value;
+                                                                this.setState({extraAnswers: this.state.extraAnswers});
+                                                            }}/>
                                                     </DraggableItem>
                                                 );
                                             })
@@ -280,6 +302,7 @@ class DragAndDropCreation extends Component {
                         </div>
 
                     </div>
+                    {/*     Display the options and the preview modal    */}
                     <DndActivityOptions
                         state={this.state}
                         displayPreview={this.displayPreview}
