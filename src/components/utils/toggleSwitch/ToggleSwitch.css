@@ -32,8 +32,9 @@
     border-radius: 50%;
     transition: 0.3s;
     border: black 1px solid;
+    transform: translateX(-25px);
 }
 
 .toggle:checked + .toggle-switch:before {
-    transform: translateX(-25px);
+    transform: translateX(0);
 }

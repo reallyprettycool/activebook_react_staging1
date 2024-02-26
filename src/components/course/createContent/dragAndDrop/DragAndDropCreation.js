@@ -2,129 +2,32 @@ import React, { Component } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import DroppableContainers from "./DroppableContainers";
 import DraggableItem from "./DraggableItem";
-import ToggleSwitch from "../../../utils/toggleSwitch/ToggleSwitch";
 import PreviewActivityModal from "../../../utils/previewActivty/PreviewActivityModal";
 import DragAndDropActivity from "../../../activities/created/dragAndDrop/DragAndDropActivity";
 import "../../../activities/created/dragAndDrop/DragAndDropActivity.css";
+import DndActivityOptions from "./DndActivityOptions";
+import EditableInput from "../../../utils/editableInput/EditableInput";
 
 class DragAndDropCreation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            droppableContainers: [
-                {
-                    id: 1,
-                    title: "Container 1"
-                },
-                {
-                    id: 2,
-                    title: "Container 2"
-                },
-                {
-                    id: 3,
-                    title: "Container 3"
-                },
-                {
-                    id: 4,
-                    title: "Container 4"
-                }
-            ],
-            draggableItems: [
-                {
-                    id: 1,
-                    content: "Item 1",
-                    parentId: 1
-                },
-                {
-                    id: 2,
-                    content: "Item 2",
-                    parentId: 1
-                },
-                {
-                    id: 3,
-                    content: "Item 3",
-                    parentId: 2
-                },
-                {
-                    id: 4,
-                    content: "Item 4",
-                    parentId: 2
-                },
-                {
-                    id: 5,
-                    content: "Item 5",
-                    parentId: 3
-                },
-                {
-                    id: 6,
-                    content: "Item 6",
-                    parentId: 3
-                },
-                {
-                    id: 7,
-                    content: "Item 7",
-                    parentId: 4
-                },
-                {
-                    id: 8,
-                    content: "Item 8",
-                    parentId: 4
-                }
-            ],
+            droppableContainers: [{
+                id: 1,
+                title: "",
+                draggableItems: []
+            }],
             newDraggable: {
+                isEditable: false,
                 content: "",
-                parentId: "0"
             },
+            extraAnswers: [],
             isOrdered: false,
+            hasExtraAnswers: false,
             displayPreview: false,
-            activityTitle: "Drag and Drop Activity"
+            activityTitle: "",
         }
     }
-
-    updateContainerCount = (e) => {
-        e.preventDefault(); // Prevent default form submission behavior
-        const { droppableContainers } = this.state; // Retrieve current droppableContainers state
-        const newContainerCount = parseInt(e.target.value); // Retrieve new container count from the input field
-        if (newContainerCount > droppableContainers.length) { // If the new container count is greater than the current container count, add containers
-            const newContainers = [];
-            for (let i = droppableContainers.length + 1; i <= newContainerCount; i++) {
-                newContainers.push({
-                    id: i,
-                    title: `Container ${i}`
-                });
-            }
-            this.setState({
-                droppableContainers: [...droppableContainers, ...newContainers]
-            });
-        }else{
-            // remove droppables associated with deleted container then delete the container
-            const newDroppableContainers = droppableContainers.filter((container) => container.id <= newContainerCount);
-            const newDraggableItems = this.state.draggableItems.filter((item) => item.parentId <= newContainerCount);
-            this.setState({
-                droppableContainers: newDroppableContainers,
-                draggableItems: newDraggableItems
-            });
-        }
-    };
-
-    addDraggable = (e) => {
-        e.preventDefault(); // Prevent default form submission behavior
-        const { newDraggable, draggableItems } = this.state; // Retrieve current newDraggable and draggableItems state
-        if (newDraggable.content && newDraggable.parentId !== "0") { // If the new draggable content is not empty and has a parent container
-            const newDraggableItem = {
-                id: draggableItems.length + 1,
-                content: newDraggable.content,
-                parentId: parseInt(newDraggable.parentId)
-            };
-            this.setState({
-                draggableItems: [...draggableItems, newDraggableItem],
-                newDraggable: {
-                    content: "",
-                    parentId: "0"
-                }
-            });
-        }
-    };
 
     // Used to update the title of the droppable container
     setDroppableTitle = (title, droppableId) => {
@@ -146,125 +49,237 @@ class DragAndDropCreation extends Component {
         console.log(this.state.displayPreview)
     }
 
+
+    resetNewDraggable = () => {
+        this.setState({
+            newDraggable: {
+                isEditable: false,
+                content: "",
+            }
+        });
+    }
+
+    handleDrag = (result) => {
+        console.log(result)
+        const { source, destination } = result;
+        // dropped outside the list
+        if(!destination) return;
+        if(source.droppableId === destination.droppableId && source.index === destination.index) return;
+        if(source.droppableId === 'New' && result.draggableId === 'New Draggable'){
+          alert('Please update the draggable');
+            return;
+        }
+
+        if(source.droppableId === destination.droppableId) {
+
+            this.setState({
+                droppableContainers: this.state.droppableContainers.map((container) => {
+                    if (container.id === parseInt(source.droppableId)) {
+                        const [removed] = container.draggableItems.splice(source.index, 1);
+                        container.draggableItems.splice(destination.index, 0, removed);
+                    }
+                    return container;
+                })
+            });
+        }else {
+            if (destination.droppableId === 'trash-bin') {
+                if(source.droppableId === "extraAnswers") {
+                    this.setState({
+                        extraAnswers: this.state.extraAnswers.filter((item, index) => index !== source.index)
+                    });
+                }else{
+                    this.setState({
+                        droppableContainers: this.state.droppableContainers.map((container) => {
+                            if (container.id === parseInt(source.droppableId)) {
+                                container.draggableItems.splice(source.index, 1);
+                            }
+                            return container;
+                        })
+                    });
+                }
+            } else {
+                console.log('dropped in a different container')
+                // remove from current container
+                this.setState({
+                    droppableContainers: this.state.droppableContainers.map((container) => {
+                        if (container.id === parseInt(source.droppableId)) {
+                            container.draggableItems.splice(source.index, 1);
+                        }
+                        return container;
+                    })
+                });
+                const draggable = {
+                    content: result.draggableId
+                }
+
+                if(destination.droppableId === 'extraAnswers') {
+                    this.setState({
+                        extraAnswers: [...this.state.extraAnswers, draggable]
+                    });
+                }else{
+                    this.setState({
+                        droppableContainers: this.state.droppableContainers.map((container) => {
+                            if (container.id === parseInt(destination.droppableId)) {
+                                container.draggableItems.splice(destination.index, 0, draggable);
+                            }
+                            return container;
+                        })
+                    });
+
+                }
+            }
+
+            if(source.droppableId === 'New') {
+                this.resetNewDraggable()
+            }
+        }
+    }
+
+    addContainer = () => {
+        const newContainer = {
+            id: this.state.droppableContainers.length + 1,
+            title: ``,
+            draggableItems: []
+        }
+        this.setState({
+            droppableContainers: [...this.state.droppableContainers, newContainer]
+        });
+    }
+
+    removeContainer = (id) => {
+        return () => {
+            this.setState({
+                droppableContainers: this.state.droppableContainers.filter((container) => container.id !== id)
+            });
+        }
+    }
+
+    actionButtons = () => {
+        return (
+            <>
+                <div className="ml-auto m-1">
+                    <button className={'btn btn-outline-secondary'}>Tutorial</button>
+                </div>
+                <div className="m-1">
+                    <button className={'btn btn-outline-info'} onClick={this.displayPreview}>Preview</button>
+                </div>
+                <div className="m-1 mr-auto mr-md-0">
+                    <button className={'btn btn-outline-success'}>Save</button>
+                </div>
+            </>
+        )
+    }
+
     render() {
         return (
-            <div className={'container-xs text-center'}>
-                <div className="row w-100 ml-sm-1  ml-xs-3">
-                    <input
-                        className={'col-12 h-100 border-0 h2 text-center'}
-                        type="text"
-                        value={this.state.activityTitle}
-                        placeholder={'Activity Title'}
-                        onChange={(e) => this.setState({activityTitle: e.target.value})}
-                    />
-                </div>
-                <DragDropContext onDragEnd={() => console.log("Dragging")}>
-                    <div className="row w-100 ml-sm-1 ml-xs-3 dnd">
-                        {this.state.droppableContainers.map((container) => {
-                            return (
-                                <DroppableContainers
-                                    className={'col-md-5 border rounded p-1 droppable'}
-                                    key={container.id}
-                                    droppableId={container.id.toString()}
-                                    container={container}
-                                >
-                                    <input
-                                        className={'mb-auto droppable-title'}
-                                        value={container.title}
-                                        onChange={(e) => this.setDroppableTitle(e.target.value, container.id)}
-                                    />
-                                    {this.state.draggableItems.map((item, index) => {
-                                        if (item.parentId === container.id) {
-                                            return (
-                                                <DraggableItem
-                                                    className={'row border border-dark draggable'}
-                                                    key={index}
-                                                    draggableId={index.toString()}
-                                                    index={index}
-                                                >
-                                                    {item.content}
-                                                </DraggableItem>
-                                            );
-                                        }
-                                    })}
-                                </DroppableContainers>
-                            );
-                        })}
+            <div className={'container-xs text-center mr-md-5 p-2'}>
+                <DragDropContext onDragEnd={this.handleDrag}>
+                    <div className="row">
+                        {this.actionButtons()}
                     </div>
-                </DragDropContext>
-                <div className="row w-100 ml-sm-1">
-                    <div className={'col-md-2 m-1'}>
-                        <div className="row">
-                            <label className={'col'}>Number of Categories:</label>
-                            <input
-                                className={'col'}
-                                type="number" value={this.state.droppableContainers.length}
-                                min="1" max="10" onChange={this.updateContainerCount}/>
-                        </div>
-                    </div>
-                    <div className="col-md-2 m-1">
-                        Is Ordered:
-                        <ToggleSwitch
-                            value={this.state.isOrdered}
-                            onChange={(value)=>{ this.setState({isOrdered: value})}}
-                        />
-                    </div>
-                    <form className={'col-md'} action="" onSubmit={this.addDraggable}>
-                        <div className="row justify-content-center m-2">
-                        <input
-                                className={'col-md-4 mr-1'}
-                                type="text"
-                                value={this.state.newDraggable.content || ""} // Ensure it's a string or provide a fallback value
-                                placeholder="Add Item"
-                                onChange={(e) => this.setState({
-                                    newDraggable: {
-                                        ...this.state.newDraggable,
-                                        content: e.target.value
-                                    }
-                                })}
+                    <div className="row ml-sm-1  ml-xs-3">
+                        <div className="w-100 h1 text-center">
+                            <EditableInput
+                                placeholder={'Activity Title'}
+                                value={this.state.activityTitle}
+                                onSave={(value) => this.setState({activityTitle: value})}
                             />
-                            <select
-                                className={'col-md-4 mt-xs-1'}
-                                value={this.state.newDraggable.parentId || '0'} // Ensure it's a string or provide a fallback value
-                                onChange={(e) => this.setState({
-                                    newDraggable: {
-                                        ...this.state.newDraggable,
-                                        parentId: e.target.value
-                                    }
-                                })}
-                            >
-                                <option value='0' disabled={true} hidden={true}>Select Container</option>
-                                {this.state.droppableContainers.map((container) => {
-                                    return (
-                                        <option key={container.id} value={container.id}>
-                                            {container.title}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                            <button className={'btn btn-primary ml-1 mt-xs-1 col-md-2'} type={'submit'}>
-                                Add
-                            </button>
                         </div>
-                    </form>
-                    <button className="btn btn-primary m-1 col-md-1" onClick={this.displayPreview}>
-                        Preview
-                    </button>
-                    <button className="btn btn-primary m-1 col-md-1">
-                        Save
-                    </button>
-                </div>
-                {
-                    this.state.displayPreview &&
-                    <PreviewActivityModal onClose={this.displayPreview}>
-                        <DragAndDropActivity
-                            droppableContainers={this.state.droppableContainers}
-                            draggableItems={this.state.draggableItems}
-                            isOrdered={this.state.isOrdered}
-                            activityTitle={this.state.activityTitle}
-                        />
-                    </PreviewActivityModal>
-                }
+                    </div>
+                    <div className="dnd">
+                        <div className="w-100 mb-auto d-flex flex-row justify-content-end align-items-end">
+                            <button className="container-btn m-2" onClick={this.addContainer}><span>+</span></button>
+                        </div>
+                        <div className="row m-auto d-flex flex-fill justify-content-center align-items-center">
+                        {this.state.droppableContainers.map((container) => {
+                                return (
+                                    <div key={container.id} className="card p-2">
+                                        <div className="card-title border-bottom h3">
+                                            <div className="row justify-content-center align-items-center">
+                                                <div className="col-10">
+                                                    <EditableInput
+                                                        placeholder={'Container Title'}
+                                                        value={container.title}
+                                                        onSave={(value) => this.setDroppableTitle(value, container.id)}
+                                                    />
+                                                </div>
+                                                <div className="col-1 d-flex flex-fill justify-content-center align-items-center">
+                                                    <button className="container-btn remove" onClick={this.removeContainer(container.id)}><span>-</span></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <DroppableContainers
+                                            className={'card-body droppable'}
+                                            droppableId={container.id.toString()}
+                                            container={container}
+                                            placeholder={container.draggableItems.length === 0}>
+                                            {
+                                                container.draggableItems.map((item, index) => {
+                                                    return (
+                                                        <DraggableItem
+                                                            key={index}
+                                                            className={'border border-dark draggable'}
+                                                            draggableId={item.content}
+                                                            index={index}>
+                                                            <p className={'m-auto'}>
+                                                                {item.content}
+                                                            </p>
+                                                        </DraggableItem>
+                                                    );
+                                                })
+                                            }
+                                        </DroppableContainers>
+                                    </div>
+                                );
+                            })}
+                            {
+                                this.state.hasExtraAnswers &&
+                                <div className="card p-2">
+                                    <div className="card-title border-bottom h3">
+                                        Extra Answers
+                                    </div>
+                                    <DroppableContainers
+                                        className={'card-body droppable'}
+                                        droppableId={'extraAnswers'}
+                                        container={{id: 404, title: "Extra Answers"}}>
+                                        {
+                                            this.state.extraAnswers.map((item, index) => {
+                                                return (
+                                                    <DraggableItem
+                                                        key={index}
+                                                        className={'border border-dark draggable'}
+                                                        draggableId={item.content}
+                                                        index={index}>
+                                                        <p className={'m-auto'}>
+                                                            {item.content}
+                                                        </p>
+                                                    </DraggableItem>
+                                                );
+                                            })
+                                        }
+                                    </DroppableContainers>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                    <DndActivityOptions
+                        state={this.state}
+                        displayPreview={this.displayPreview}
+                        setState={(state) => this.setState(state)}
+                    />
+                    {
+                        this.state.displayPreview &&
+                        <PreviewActivityModal onClose={this.displayPreview}>
+                            <DragAndDropActivity
+                                droppableContainers={this.state.droppableContainers}
+                                extraAnswers={this.state.extraAnswers}
+                                isOrdered={this.state.isOrdered}
+                                activityTitle={this.state.activityTitle}
+                            />
+                        </PreviewActivityModal>
+                    }
+                </DragDropContext>
             </div>
         )
     }

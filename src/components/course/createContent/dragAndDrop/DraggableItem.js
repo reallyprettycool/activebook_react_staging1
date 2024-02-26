@@ -6,8 +6,8 @@ class DraggableItem extends Component {
         const { draggableId, index, className } = this.props;
 
         return (
-            <Draggable draggableId={draggableId} index={index}>
-                {(provided, snapshot) => (
+            <Draggable draggableId={draggableId} index={index} type={'answer'}>
+                {(provided) => (
                     <div ref={provided.innerRef}
                          {...provided.draggableProps}
                          {...provided.dragHandleProps}
