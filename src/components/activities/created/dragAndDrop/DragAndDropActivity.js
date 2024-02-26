@@ -9,17 +9,18 @@ class DragAndDropActivity extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            droppableContainers: props.droppableContainers || [],
-            extraAnswers: props.extraAnswers || [],
-            isOrdered: props.isOrdered || false,
-            activityTitle: props.activityTitle || 'Drag and Drop Activity',
-            activityContainers: [],
-            allAnswers: [],
-            showResults: false,
-            resultMsg: 'Wrong! Try again!'
+            droppableContainers: props.droppableContainers || [], // Array of containers with draggable items
+            extraAnswers: props.extraAnswers || [], // Extra answers to be added to the answer bank
+            isOrdered: props.isOrdered || false, // Determines if the answers are ordered
+            activityTitle: props.activityTitle || 'Drag and Drop Activity', // Title of the activity
+            activityContainers: [], // Array of containers with draggable items used to display the activity
+            allAnswers: [], // Array of all draggable items for the answer bank
+            showResults: false, // Determines if the results modal is shown
+            resultMsg: '' // Message to be displayed in the results modal
         };
     }
 
+    // Reset the activity to its initial state
     resetActivity = () => {
         this.setState({
             allAnswers: this.getAllAnswers(this.state.droppableContainers),
@@ -27,10 +28,13 @@ class DragAndDropActivity extends Component {
         });
     }
 
+
+    // Check the answers
     checkAnswers = () => {
         const isOrdered = this.state.isOrdered;
         let result;
 
+        // Check if the answers are ordered
         if (isOrdered) {
             const correctContainers = this.state.droppableContainers.map(container => ({...container}));
             const userContainers = this.state.activityContainers.map(container => ({...container}));
@@ -49,6 +53,7 @@ class DragAndDropActivity extends Component {
                     return userItem && correctItem.content === userItem.content;
                 });
             });
+            // Set the result message
             if(result){
                 this.setState({resultMsg: 'Correct!'});
             }else{
@@ -69,12 +74,11 @@ class DragAndDropActivity extends Component {
         }
 
         this.setState({showResults: true});
-        console.log('result', result);
-        console.log('showing results modal', this.state.showResults);
-        this.resetActivity();
+        this.resetActivity(); // Reset the activity
     };
 
 
+    // Get all the answers from the containers and extra answers
     getAllAnswers = (containers) =>{
         let answers = [];
         containers.forEach(container => {
@@ -93,6 +97,7 @@ class DragAndDropActivity extends Component {
         return answers;
     }
 
+    // Get containers with no draggable items
     getEmptyContainers = (containers) => {
         return containers.map(container => {
             return {
@@ -107,23 +112,23 @@ class DragAndDropActivity extends Component {
     onDragEnd = (result) => {
         const { source, destination } = result;
 
+        // dropped outside the list
         if (!destination) return;
 
         const sourceId = source.droppableId;
         const destinationId = destination.droppableId;
         const sourceIndex = source.index;
         const destinationIndex = destination.index;
+
         // Item dropped in same place
         if (sourceId === destinationId && sourceIndex === destinationIndex) return;
         if(sourceId === 'answer-bank') {
+            // move from answer bank to answer bank
             if(destinationId === 'answer-bank'){
-                console.log('answer bank to answer bank')
-                // move indexes
                 const [removed] = this.state.allAnswers.splice(sourceIndex, 1);
                 this.state.allAnswers.splice(destinationIndex, 0, removed);
                 this.setState({allAnswers: this.state.allAnswers});
             }else{
-                console.log('answer bank to container')
                 // move from answer bank to container
                 const [removed] = this.state.allAnswers.splice(sourceIndex, 1);
                 const destinationContainer = this.state.activityContainers.find(container => container.id.toString() === destinationId);
@@ -132,14 +137,12 @@ class DragAndDropActivity extends Component {
             }
         }else{
             if(destinationId === 'answer-bank'){
-                console.log('container to answer bank')
                 // move from container to answer bank
                 const sourceContainer = this.state.activityContainers.find(container => container.id.toString() === sourceId);
                 const [removed] = sourceContainer.draggableItems.splice(sourceIndex, 1);
                 this.state.allAnswers.splice(destinationIndex, 0, removed);
                 this.setState({allAnswers: this.state.allAnswers, activityContainers: this.state.activityContainers});
             }else{
-                console.log('container to container')
                 // move containers and indexes
                 const sourceContainer = this.state.activityContainers.find(container => container.id.toString() === sourceId);
                 const destinationContainer = this.state.activityContainers.find(container => container.id.toString() === destinationId);
@@ -159,9 +162,7 @@ class DragAndDropActivity extends Component {
             activityContainers: this.getEmptyContainers(this.state.droppableContainers)
         });
     }
-
     render() {
-
         return (
             <div className={'container-fluid border border-dark rounded'}>
                 <DragDropContext onDragEnd={this.onDragEnd}>

@@ -12,20 +12,20 @@ class DragAndDropCreation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            droppableContainers: [{
+            droppableContainers: [{ // Default container
                 id: 1,
                 title: "",
                 draggableItems: []
             }],
-            newDraggable: {
+            newDraggable: { // Default draggable
                 isEditable: false,
                 content: "",
             },
-            extraAnswers: [],
-            isOrdered: false,
-            hasExtraAnswers: false,
-            displayPreview: false,
-            activityTitle: "",
+            extraAnswers: [],       // Extra answers list
+            isOrdered: false,       // Determines if the answers have a specific order
+            hasExtraAnswers: false, // Toggle for extra answers
+            displayPreview: false,  // Displays the preview modal
+            activityTitle: "",      // Activity title
         }
     }
 
@@ -36,20 +36,19 @@ class DragAndDropCreation extends Component {
                 if (container.id === parseInt(droppableId)) {
                     container.title = title;
                 }
-
                 return container;
             })
         });
     }
 
+    // Toggles the display of the preview modal
     displayPreview = () => {
         this.setState({
             displayPreview: !this.state.displayPreview
         });
-        console.log(this.state.displayPreview)
     }
 
-
+    // Resets the new draggable item
     resetNewDraggable = () => {
         this.setState({
             newDraggable: {
@@ -59,19 +58,21 @@ class DragAndDropCreation extends Component {
         });
     }
 
+    // Handles the drag and drop functionality
     handleDrag = (result) => {
-        console.log(result)
         const { source, destination } = result;
         // dropped outside the list
         if(!destination) return;
+        // Prevents the draggable from being dropped in the same location
         if(source.droppableId === destination.droppableId && source.index === destination.index) return;
+        // Prevents the draggable from being dropped without being updated
         if(source.droppableId === 'New' && result.draggableId === 'New Draggable'){
           alert('Please update the draggable');
-            return;
+          return;
         }
-
+        // If dropped in the same container
         if(source.droppableId === destination.droppableId) {
-
+            // move order of draggable items
             this.setState({
                 droppableContainers: this.state.droppableContainers.map((container) => {
                     if (container.id === parseInt(source.droppableId)) {
@@ -82,12 +83,15 @@ class DragAndDropCreation extends Component {
                 })
             });
         }else {
+            // If dropped in the trash bin
             if (destination.droppableId === 'trash-bin') {
+                // if it comes from the extra answers
                 if(source.droppableId === "extraAnswers") {
                     this.setState({
                         extraAnswers: this.state.extraAnswers.filter((item, index) => index !== source.index)
                     });
                 }else{
+                    // remove from current container
                     this.setState({
                         droppableContainers: this.state.droppableContainers.map((container) => {
                             if (container.id === parseInt(source.droppableId)) {
@@ -98,7 +102,6 @@ class DragAndDropCreation extends Component {
                     });
                 }
             } else {
-                console.log('dropped in a different container')
                 // remove from current container
                 this.setState({
                     droppableContainers: this.state.droppableContainers.map((container) => {
@@ -108,15 +111,17 @@ class DragAndDropCreation extends Component {
                         return container;
                     })
                 });
+                // create new draggable item
                 const draggable = {
                     content: result.draggableId
                 }
-
+                // if dropped in extra answers
                 if(destination.droppableId === 'extraAnswers') {
                     this.setState({
                         extraAnswers: [...this.state.extraAnswers, draggable]
                     });
                 }else{
+                    // add to dropped container
                     this.setState({
                         droppableContainers: this.state.droppableContainers.map((container) => {
                             if (container.id === parseInt(destination.droppableId)) {
@@ -128,13 +133,14 @@ class DragAndDropCreation extends Component {
 
                 }
             }
-
+            // Reset the new draggable item if source is the new draggable
             if(source.droppableId === 'New') {
                 this.resetNewDraggable()
             }
         }
     }
 
+    // Adds a new container
     addContainer = () => {
         const newContainer = {
             id: this.state.droppableContainers.length + 1,
@@ -146,6 +152,7 @@ class DragAndDropCreation extends Component {
         });
     }
 
+    // Removes a container
     removeContainer = (id) => {
         return () => {
             this.setState({
@@ -154,6 +161,7 @@ class DragAndDropCreation extends Component {
         }
     }
 
+    // Renders the action buttons
     actionButtons = () => {
         return (
             <>
