@@ -8,6 +8,11 @@ import "../../../activities/created/dragAndDrop/DragAndDropActivity.css";
 import DndActivityOptions from "./DndActivityOptions";
 import EditableInput from "../../../utils/editableInput/EditableInput";
 
+/**
+ * This component is used to create a drag and drop activity.
+ * @param props - droppableContainers, extraAnswers, isOrdered, activityTitle
+ * @returns {JSX.Element}
+ */
 class DragAndDropCreation extends Component {
     constructor(props) {
         super(props);
@@ -229,9 +234,13 @@ class DragAndDropCreation extends Component {
                                                             className={'border border-dark draggable'}
                                                             draggableId={item.content}
                                                             index={index}>
-                                                            <p className={'m-auto'}>
-                                                                {item.content}
-                                                            </p>
+                                                            <EditableInput
+                                                                placeholder={'Activity Title'}
+                                                                value={item.content}
+                                                                onSave={(value) => {
+                                                                    container.draggableItems[index].content = value;
+                                                                    this.setState({droppableContainers: this.state.droppableContainers});
+                                                                }}/>
                                                         </DraggableItem>
                                                     );
                                                 })

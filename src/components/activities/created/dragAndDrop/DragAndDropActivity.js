@@ -3,8 +3,15 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import DroppableContainers from '../../../course/createContent/dragAndDrop/DroppableContainers';
 import DraggableItem from '../../../course/createContent/dragAndDrop/DraggableItem';
-import ResultsModal from "./resultsModal";
+import ResultsModal from "./ResultsModal";
 
+/** This component is a drag and drop activity that allows users to drag and drop items into containers
+ * @param props - droppableContainers: Array of containers with draggable items,
+ *                extraAnswers: Extra answers to be added to the answer bank,
+ *                isOrdered: Determines if the answers are ordered,
+ *                activityTitle: Title of the activity
+ * @returns {JSX.Element}
+ */
 class DragAndDropActivity extends Component {
     constructor(props) {
         super(props);
@@ -61,10 +68,15 @@ class DragAndDropActivity extends Component {
             }
 
         } else {
-            const correctItems = this.state.allAnswers.map(item => item.content);
-            const userItems = this.state.activityContainers.flatMap(container => container.draggableItems.map(item => item.content));
+            const correctContainers = this.state.droppableContainers.map(container => ({...container}));
+            const userContainers = this.state.activityContainers.map(container => ({...container}));
 
-            result = correctItems.length === userItems.length && correctItems.every((item, index) => item === userItems[index]);
+            result = correctContainers.every((correctContainer, index) => {
+                const userContainer = userContainers[index];
+                const correctItems = correctContainer.draggableItems.map(item => item.content);
+                const userItems = userContainer.draggableItems.map(item => item.content);
+                return correctItems.every(item => userItems.includes(item));
+            })
 
             if(result) {
                 this.setState({resultMsg: 'Correct!'});

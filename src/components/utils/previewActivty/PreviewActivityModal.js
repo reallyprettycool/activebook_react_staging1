@@ -1,7 +1,16 @@
 import React from 'react';
 import './PreviewActivityModal.css'; // Import CSS file for styling
 
+/**
+ * This component is a modal that displays a preview of the activity.
+ * @param props - The props of the component
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 function PreviewActivityModal(props) {
+
+    // Function to close the modal
     const handleClose = () => {
         if (props.onClose) {
             props.onClose();

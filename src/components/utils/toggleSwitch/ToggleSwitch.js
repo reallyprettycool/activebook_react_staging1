@@ -1,9 +1,14 @@
 import React from 'react';
 import './ToggleSwitch.css';
 
+/**
+ * @param value // boolean value to determine if the switch is on or off
+ * @param onChange // function to handle the change event
+ * @returns {JSX.Element}
+ */
 function ToggleSwitch({value, onChange}) {
 
-    const handleChange = (e) => {
+    const handleChange = () => {
         onChange(!value);
     }
 
