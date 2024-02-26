@@ -24,7 +24,7 @@ class CourseDetails extends Component {
       theCourse: this.props.oneCourse,
       editCourse: false,
       addStudents: false,
-      whatToShow: "showCourse",
+      whatToShow: "showCourse", // Should be "showCourse" for production
       theAssignment: {},
       loggedInUser: this.props.userInSession,
       redirect: false,
@@ -397,7 +397,7 @@ class CourseDetails extends Component {
                 ? this.showCourseActions()
                 : this.showCourse()}
             </div>
-            <div className="col-lg-9 col-md-8 col-sm-12">
+            <div className="col-lg-9 col-md-8 col-sm-12 ">
               {this.state.loggedInUser &&
               this.state.loggedInUser.role === "instructor"
                 ? this.renderForms()

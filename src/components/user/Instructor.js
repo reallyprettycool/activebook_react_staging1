@@ -22,19 +22,25 @@ class Instructor extends Component {
 
   handleFormSubmit = (event) => {
     event.preventDefault();
+    console.log("Form submit")
 
     const regex1 = new RegExp("^[a-zA-Z0-9]+@[a-zA-Z0-9]+.[A-Za-z]+$");
     if (!this.state.email || !regex1.test(this.state.email)) {
+      console.log("Email check failed")
       this.setState({ error: "Please enter your email address" });
     } else if (!this.state.firstname || !this.state.lastname) {
+        console.log("Name check failed")
       this.setState({ error: "Please enter your first and last name" });
     } else if (!this.state.institution || !this.state.title) {
+        console.log("Institution check failed")
       this.setState({ error: "Please enter your institution and title" });
     } else if (this.state.confirm !== this.state.password) {
+        console.log("Password check failed")
       this.setState({
         error: "Please confirm your password and check that they match",
       });
     } else {
+      console.log("All checks passed")
       const email = this.state.email.toLowerCase();
       const password = this.state.password;
       const firstname = this.state.firstname;
@@ -42,8 +48,8 @@ class Instructor extends Component {
       const confirm = this.state.confirm;
       const institution = this.state.institution;
       const title = this.state.title;
-      this.service
-        .instructorSignup(
+
+      this.service.instructorSignup(
           email,
           password,
           confirm,
@@ -51,8 +57,7 @@ class Instructor extends Component {
           lastname,
           institution,
           title
-        )
-        .then((response) => {
+        ).then((response) => {
           this.setState({
             email: "",
             password: "",
@@ -63,7 +68,9 @@ class Instructor extends Component {
             title: "",
             error: false,
           });
+
           console.log("the user object 0-0-0", response);
+
           if ("message" in response) {
             this.setState({ error: response });
           } else {
@@ -75,6 +82,7 @@ class Instructor extends Component {
           this.setState({ error: err.response.data.message });
         });
     } // end of else statement
+    console.log("Checks failed")
   };
 
   handleChange = (event) => {

@@ -38,6 +38,7 @@ class Login extends Component {
       
       this.service.login(email, password)
       .then( response => {
+          console.log('login response', response)
           this.setState({
               email: "", 
               password: "",
@@ -53,7 +54,7 @@ class Login extends Component {
       })
       .catch( err => {
         this.setState({error:err.response.data.error})
-        // console.log('login error ----',err.response) 
+        console.log('login error ----',err.response)
       }) 
     }
   }
