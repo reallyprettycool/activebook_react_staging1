@@ -32,6 +32,8 @@ class DragAndDropCreation extends Component {
             displayPreview: false,  // Displays the preview modal
             activityTitle: "",      // Activity title
         }
+
+        this.saveActivity = props.saveActivity;
     }
 
     // Used to update the title of the droppable container
@@ -46,12 +48,6 @@ class DragAndDropCreation extends Component {
         });
     }
 
-    // Toggles the display of the preview modal
-    displayPreview = () => {
-        this.setState({
-            displayPreview: !this.state.displayPreview
-        });
-    }
 
     // Resets the new draggable item
     resetNewDraggable = () => {
@@ -178,6 +174,29 @@ class DragAndDropCreation extends Component {
         }
     }
 
+    // The following three functions are for the action buttons
+    displayPreview = () => {
+        this.setState({
+            displayPreview: !this.state.displayPreview
+        });
+    }
+
+    onSave = () => {
+        const activity = {
+            title: this.state.activityTitle,
+            description: "Drag and Drop Activity",
+            activityParameters: {
+                droppableContainers: this.state.droppableContainers,
+                extraAnswers: this.state.extraAnswers,
+                isOrdered: this.state.isOrdered
+            },
+        }
+
+        return async () => {
+            await this.saveActivity(activity);
+        }
+    }
+
     // Renders the action buttons
     actionButtons = () => {
         return (
@@ -189,7 +208,7 @@ class DragAndDropCreation extends Component {
                     <button className={'btn btn-outline-info'} onClick={this.displayPreview}>Preview</button>
                 </div>
                 <div className="m-1 mr-auto mr-md-0">
-                    <button className={'btn btn-outline-success'}>Save</button>
+                    <button className={'btn btn-outline-success'} onClick={this.onSave()}>Save</button>
                 </div>
             </>
         )

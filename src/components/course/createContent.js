@@ -5,6 +5,7 @@ import TextImages from "./createContent/textImages";
 import OtherActivities from "./createContent/OtherActivities";
 import CreatedActivities from "./createContent/CreatedActivities";
 import DragAndDropCreation from "./createContent/dragAndDrop/DragAndDropCreation";
+import axios from "axios";
 class CreateContent extends Component {
   constructor(props) {
     super(props);
@@ -12,6 +13,10 @@ class CreateContent extends Component {
     this.state = {
       whatToShow: "createdActivities",
     };
+    this.service = axios.create({
+      baseURL: `${process.env.REACT_APP_BASE_URL}/activities`,
+      withCredentials: true,
+    });
   }
 
   handleChildValue = async (value) => {
@@ -23,6 +28,13 @@ class CreateContent extends Component {
     console.log(e);
     await this.setState({ whatToShow: e });
   };
+
+    getAllActivities = async (then) => {
+      return this.service.get("/titles-descriptions/" + this.props.theCourse._id)
+          .then((response) =>{then(response)})
+          .catch((err) => {console.log(err)});
+    }
+
   renderForms = () => {
     switch (this.state.whatToShow) {
       case "multipleChoice":
@@ -34,11 +46,11 @@ class CreateContent extends Component {
       case "otherActivities":
         return <OtherActivities />;
       case "createdActivities":
-        return <CreatedActivities />;
+        return <CreatedActivities  getActivities={this.getAllActivities}/>;
       case "dragAndDrop":
         return <DragAndDropCreation />;
       default:
-        return <CreatedActivities />;
+        return <CreatedActivities getActivitie={this.getAllActivities}/>;
     }
   };
 

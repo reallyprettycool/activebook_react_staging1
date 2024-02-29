@@ -212,7 +212,12 @@ class CourseDetails extends Component {
             />
           ); //  {...props} => so we can have 'this.props.history' in Edit.js
         case "createContent":
-          return <CreateContent service={ this.authService } />;
+          return <CreateContent
+              theCourse={this.state.theCourse}
+              getCourse={this.getOneCourse}
+              toggleForm={this.toggleFormsFromComponent}
+              {...this.props}
+          />;
         case "showAssignments":
           return this.showAssignments();
         case "showGrades":
