@@ -12,6 +12,7 @@ class CreateContent extends Component {
 
     this.state = {
       whatToShow: "createdActivities",
+      editThisActivity: null,
     };
     this.service = axios.create({
       baseURL: `${process.env.REACT_APP_BASE_URL}/activities`,
@@ -19,38 +20,80 @@ class CreateContent extends Component {
     });
   }
 
-  handleChildValue = async (value) => {
-    console.log("value ", value);
-    await this.setState({ whatToShow: value });
-  };
-
   showItem = async (e) => {
     console.log(e);
+    if(e !== this.state.whatToShow) {
+        await this.setState({ editThisActivity: null });
+    }
     await this.setState({ whatToShow: e });
   };
 
-    getAllActivities = async (then) => {
-      return this.service.get("/titles-descriptions/" + this.props.theCourse._id)
-          .then((response) =>{then(response)})
-          .catch((err) => {console.log(err)});
+  // Used for created activities.
+  getActivityInfo = async (then) => {
+    return this.service.get("/all-created/" + this.props.theCourse._id)
+        .then((response) =>{then(response)})
+        .catch((err) => {console.log(err)});
+  }
+
+  // Returns a singular activity
+  getActivity = async (activityId, then) => {
+    return this.service.get("/" + activityId)
+        .then((response) => then(response))
+        .catch((err) => console.log(err))
+  }
+
+  saveActivity = async (activity, then) => {
+    let newActivity
+    // If the ID exists, then we are updating the activity
+    if (activity._id) {
+      newActivity = {
+        ...activity,
+        courseId: this.props.theCourse._id,
+      }
+      return this.service.put("/" + activity._id, newActivity)
+          .then((response) => then(response))
+    } else {
+      // If the ID does not exist, then we are creating a new activity
+        newActivity = {
+            ...activity,
+            courseId: this.props.theCourse._id,
+            activityType: this.state.whatToShow,
+        }
+        return this.service.post("/create", newActivity)
+            .then((response) => then(response))
     }
+  }
+
+  editThisActivity = (activity) => {
+    this.setState({
+      ...this.state,
+      editThisActivity: activity,
+      whatToShow: activity.activityType
+    })
+  }
+
 
   renderForms = () => {
     switch (this.state.whatToShow) {
       case "multipleChoice":
         return <MultipleChoice />;
       case "textImages":
-        return <TextImages onValueEmitted={this.handleChildValue} />;
+        return <TextImages onValueEmitted={this.showItem} />;
       case "h5p":
         return <H5P />;
       case "otherActivities":
         return <OtherActivities />;
-      case "createdActivities":
-        return <CreatedActivities  getActivities={this.getAllActivities}/>;
       case "dragAndDrop":
-        return <DragAndDropCreation />;
+        return <DragAndDropCreation
+            onSave={this.saveActivity}
+            editActivity={this.state.editThisActivity}/>;
       default:
-        return <CreatedActivities getActivitie={this.getAllActivities}/>;
+        return <CreatedActivities
+            getActivityInfo={this.getActivityInfo}
+            getActivity={this.getActivity}
+            showItem={this.showItem}
+            setEdit={this.editThisActivity}
+            {...this.props}/> // So that we can redirect to the activity page with edit
     }
   };
 
@@ -67,9 +110,8 @@ class CreateContent extends Component {
     return (
       <div>
         <nav
-          className="col-6"
-          aria-label="Page navigation example"
-          style={{ backgroundColor: "#ffffff" }}>
+          className="col-6 bg-white"
+          aria-label="Page navigation example">
           <ul className="pagination">
               {
                 this.tabList.map((tab, index) => {
