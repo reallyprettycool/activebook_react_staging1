@@ -10,12 +10,17 @@
 ## Introduction
 Introduction to the DEMOED React App
 
-This is a web application that allows teachers to create and manage courses and activities. 
+This is a web application that allows teachers to create and manage courses and activities. Students can work on the activities unlimited times during the availability period. Scores are recorded only when students have complete a successful attempt without any mistakes. 
+
 The application is built using React and Ant Design for the front-end, and Node.js and Express for the back-end while using MongoDB as the database.
 
 The application is divided into two main sections:
 - The course section
 - The activity section
+
+There are two main views depending on user priviledges: 
+- Student view
+- Instructor view
 
 ### The course section
 The course section allows teachers to create and manage courses. Teachers can create new courses, view all courses, view a single course, edit a course, and delete a course.
@@ -23,7 +28,7 @@ The course section allows teachers to create and manage courses. Teachers can cr
 ### The activity section
 The activity section allows teachers to create and manage activities. 
 Teachers can create new activities, view all activities, view a single activity, edit an activity, and delete an activity.
-They are able to assign activities to students and view the results of the activities.
+They are able to assign activities to students and view the results of the activities. Current editing function only allows to change the name of the activity and availability dates but not to change the activity itself, but we are working to include that. 
 
 Although the application comes with a few pre-built activities, teachers can create custom activities to suit their needs.
 
