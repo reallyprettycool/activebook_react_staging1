@@ -24,11 +24,12 @@ class CourseDetails extends Component {
       theCourse: this.props.oneCourse,
       editCourse: false,
       addStudents: false,
-      whatToShow: "showCourse", // Should be "showCourse" for production
+      whatToShow: "createContent", // Should be "showCourse" for production
       theAssignment: {},
       loggedInUser: this.props.userInSession,
       redirect: false,
     };
+
     this.service = axios.create({
       baseURL: process.env.REACT_APP_BASE_URL,
       withCredentials: true,
@@ -95,11 +96,13 @@ class CourseDetails extends Component {
         console.log("get course error ", err);
         // console.log('response headers: ',err.response.headers);
       });
+
+    console.log('the course: ', this.state.theCourse)
     // }
   };
 
   componentDidMount() {
-    const { params } = this.props.match;
+    const {params} = this.props.match;
     // console.log('Props have the user? ', this.props.userInSession.firstname)
     // console.log('Props have a course? ', this.props.oneCourse)
     // if( this.props.userInSession === null ) {
@@ -107,6 +110,7 @@ class CourseDetails extends Component {
     // } else if (!this.props.oneCourse || this.props.oneCourse._id !== params){
     //   this.getOneCourse()
     // }
+
   }
 
   fetchUser() {

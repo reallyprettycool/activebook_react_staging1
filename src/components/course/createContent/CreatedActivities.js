@@ -29,10 +29,10 @@ class CreatedActivities extends Component {
     };
 
     this.showItem = props.showItem;
-    this.getActivityInfo = props.getActivityInfo;
     this.getActivity = props.getActivity;
+    this.getActivityInfo = props.getActivityInfo;
     this.setEdit = props.setEdit;
-
+    this.deleteActivity = props.deleteActivity;
   }
 
   onPreview = (activityId) => {
@@ -69,6 +69,27 @@ class CreatedActivities extends Component {
     });
   }
 
+  onDelete = (activityId) => {
+        this.deleteActivity(activityId, (response) => {
+            console.log(response.data);
+            this.getActivityInfo((response) => {
+                this.setState({
+                    activityInfo: response.data
+                });
+            });
+        });
+
+  }
+
+  dropdownStyle = {
+      minWidth: 'unset',
+      width: 'auto',
+      textAlign: 'center',
+      padding: '0',
+      margin: '0',
+      marginTop: '0.5rem'
+  }
+
   actionButtons = (activityId) => {
       return (
           <div className="dropdown rounded align-items-center justify-content-center">
@@ -76,9 +97,13 @@ class CreatedActivities extends Component {
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Actions
               </button>
-              <div className="dropdown-menu border shadow-lg mt-2 m-0 p-0" aria-labelledby="dropdownMenuButton">
-                  <a className="dropdown-item mb-1 rounded-top bg-primary" href="#" onClick={()=> this.onEdit(activityId)}>Edit</a>
-                  <a className="dropdown-item mt-1 rounded-bottom bg-info" href="#" onClick={()=> this.onPreview(activityId)}>Preview</a>
+              <div className="dropdown-menu dropdown-menu-right border shadow-lg"
+                     style={this.dropdownStyle}
+                   aria-labelledby="dropdownMenuButton">
+                  <button className="dropdown-item mb-1 rounded-top bg-primary"
+                     onClick={()=> this.onEdit(activityId)}>Edit</button>
+                  <button className="dropdown-item mt-1 rounded-bottom bg-info"
+                     onClick={()=> this.onPreview(activityId)}>Preview</button>
               </div>
           </div>
       )
@@ -96,7 +121,7 @@ class CreatedActivities extends Component {
                             <th scope="col">Description</th>
                             <th scope={'col'}>Activity Type</th>
                             <th scope={"col-1"}></th>
-                            <th scope={"col-1"}></th>
+                            <th scope={"col-1"}>Delete</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -107,7 +132,10 @@ class CreatedActivities extends Component {
                                         <td>{activity.description}</td>
                                         <td>{activity.activityType}</td>
                                         <td className={'col-1'}>{this.actionButtons(activity._id)}</td>
-                                        <td className={'col-1'}><button className={'btn btn-sm btn-outline-danger rounded-circle'}>X</button></td>
+                                        <td className={'col-1'}>
+                                            <button className={'btn btn-md btn-outline-danger rounded-circle'}
+                                                    onClick={()=>this.onDelete(activity._id)}>X</button>
+                                        </td>
                                     </tr>
                                 );
                             })}
