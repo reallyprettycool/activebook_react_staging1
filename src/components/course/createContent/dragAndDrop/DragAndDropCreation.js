@@ -12,6 +12,8 @@ import EditableInput from "../../../utils/editableInput/EditableInput";
  * This component is used to create a drag and drop activity.
  * @param props - droppableContainers, extraAnswers, isOrdered, activityTitle
  * @returns {JSX.Element}
+ *
+ * @author Franklin Neves Filho
  */
 class DragAndDropCreation extends Component {
     constructor(props) {
@@ -31,8 +33,32 @@ class DragAndDropCreation extends Component {
             hasExtraAnswers: false, // Toggle for extra answers
             displayPreview: false,  // Displays the preview modal
             activityTitle: "",      // Activity title
+            description: "",        // Activity description
+            activityId: null,       // Activity ID
+        }
+        this.saveActivity = props.onSave;
+
+        // Check if there is an activity to be edited
+        // and set values accordingly
+        if(props.editActivity){
+            const activity = props.editActivity;
+            this.state = {
+                droppableContainers: activity.activityParams.droppableContainers,
+                newDraggable: { // Default draggable
+                    isEditable: false,
+                    content: "",
+                },
+                extraAnswers: activity.activityParams.extraAnswers,
+                isOrdered: activity.activityParams.isOrdered,
+                hasExtraAnswers: activity.activityParams.extraAnswers.length > 0,
+                displayPreview: false,
+                activityTitle: activity.title,
+                description: activity.description,
+                activityId: activity._id
+            };
         }
     }
+
 
     // Used to update the title of the droppable container
     setDroppableTitle = (title, droppableId) => {
@@ -46,13 +72,6 @@ class DragAndDropCreation extends Component {
         });
     }
 
-    // Toggles the display of the preview modal
-    displayPreview = () => {
-        this.setState({
-            displayPreview: !this.state.displayPreview
-        });
-    }
-
     // Resets the new draggable item
     resetNewDraggable = () => {
         this.setState({
@@ -60,6 +79,18 @@ class DragAndDropCreation extends Component {
                 isEditable: false,
                 content: "",
             }
+        });
+    }
+
+    // Adds a new container
+    addContainer = () => {
+        const newContainer = {
+            id: this.state.droppableContainers.length + 1,
+            title: ``,
+            draggableItems: []
+        }
+        this.setState({
+            droppableContainers: [...this.state.droppableContainers, newContainer]
         });
     }
 
@@ -72,8 +103,8 @@ class DragAndDropCreation extends Component {
         if(source.droppableId === destination.droppableId && source.index === destination.index) return;
         // Prevents the draggable from being dropped without being updated
         if(source.droppableId === 'New' && result.draggableId === 'New Draggable'){
-          alert('Please update the draggable');
-          return;
+            alert('Please update the draggable');
+            return;
         }
 
         // If dropped in the same container -> not new draggable container
@@ -157,17 +188,6 @@ class DragAndDropCreation extends Component {
         }
     }
 
-    // Adds a new container
-    addContainer = () => {
-        const newContainer = {
-            id: this.state.droppableContainers.length + 1,
-            title: ``,
-            draggableItems: []
-        }
-        this.setState({
-            droppableContainers: [...this.state.droppableContainers, newContainer]
-        });
-    }
 
     // Removes a container
     removeContainer = (id) => {
@@ -178,18 +198,53 @@ class DragAndDropCreation extends Component {
         }
     }
 
+    // The following three functions are for the action buttons
+    displayPreview = () => {
+        this.setState({
+            displayPreview: !this.state.displayPreview
+        });
+    }
+
+    // Saves the activity
+    onSave = () => {
+        const title = this.state.activityTitle;
+        const description = this.state.description;
+
+        if(!title || !description){
+            alert('Please enter a title and description');
+            return;
+        }
+
+        const activityParams = {
+            droppableContainers: this.state.droppableContainers,
+            extraAnswers: this.state.extraAnswers,
+            isOrdered: this.state.isOrdered
+        }
+
+        this.saveActivity({
+            title: this.state.activityTitle,
+            description: this.state.description,
+            activityType: "dragAndDrop", // This value is determined by the 'createContent' component
+            activityParams: activityParams,
+            _id: this.state.activityId
+        }, ()=> alert('Activity saved!'))
+    }
+
+
+
     // Renders the action buttons
     actionButtons = () => {
         return (
             <>
                 <div className="ml-auto m-1">
-                    <button className={'btn btn-outline-secondary'}>Tutorial</button>
+                    <button className={'btn btn-outline-secondary'} onClick={() => console.log(this.state)}>Tutorial
+                    </button>
                 </div>
                 <div className="m-1">
                     <button className={'btn btn-outline-info'} onClick={this.displayPreview}>Preview</button>
                 </div>
-                <div className="m-1 mr-auto mr-md-0">
-                    <button className={'btn btn-outline-success'}>Save</button>
+                <div className="m-1">
+                    <button className={'btn btn-outline-success'} onClick={this.onSave}>Save</button>
                 </div>
             </>
         )
@@ -209,6 +264,13 @@ class DragAndDropCreation extends Component {
                                 placeholder={'Activity Title'}
                                 value={this.state.activityTitle}
                                 onSave={(value) => this.setState({activityTitle: value})}
+                            />
+                        </div>
+                        <div className="w-100 h5 text-center">
+                            <EditableInput
+                                placeholder={'Activity Description'}
+                                value={this.state.description}
+                                onSave={(value) => this.setState({description: value})}
                             />
                         </div>
                     </div>

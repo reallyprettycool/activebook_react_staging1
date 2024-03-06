@@ -11,6 +11,7 @@ import ResultsModal from "./ResultsModal";
  *                isOrdered: Determines if the answers are ordered,
  *                activityTitle: Title of the activity
  * @returns {JSX.Element}
+ * @Author Franklin Neves Filho
  */
 class DragAndDropActivity extends Component {
     constructor(props) {
@@ -25,6 +26,22 @@ class DragAndDropActivity extends Component {
             showResults: false, // Determines if the results modal is shown
             resultMsg: '' // Message to be displayed in the results modal
         };
+
+        // All activity components should have this check to verify that the activity has been passed in the props
+        if(this.props.activity) {
+            const activity = this.props.activity;
+            const activityParams = this.props.activity.activityParams;
+
+            this.state.droppableContainers = activityParams.droppableContainers;
+            this.state.extraAnswers = activityParams.extraAnswers;
+            this.state.isOrdered = activityParams.isOrdered;
+            this.state.activityTitle = activity.title;
+            //console.log(this.props.activity);
+        }
+        // else{
+        //     console.log("No activity props");
+        // }
+
     }
 
     // Reset the activity to its initial state
@@ -220,12 +237,11 @@ class DragAndDropActivity extends Component {
                                             }
                                         </div>
                                     </div>
-                                    <div className="col-lg-3">
+                                    <div className="col col-lg-3 d-flex justify-content-center align-items-center">
                                         <div className="card border-dark p-2">
                                             <h3 className={'card-title border-bottom'}>Answers</h3>
                                             <DroppableContainers className={'card-body droppable'} droppableId="answer-bank">
-                                                <div
-                                                    className="d-flex flex-column w-100 h-100 justify-content-center align-items-center">
+                                                <div className="d-flex flex-column w-100 h-100 justify-content-center align-items-center">
                                                     {
                                                         this.state.allAnswers.map((answer, index) => {
                                                             return (

@@ -17,10 +17,12 @@ class Courses extends Component {
       loggedInUser: this.props.userInSession,
       redirect: false,
     };
+
     this.service = axios.create({
       baseURL: process.env.REACT_APP_BASE_URL,
       withCredentials: true,
     });
+
     this.serviceAuth = new AuthService();
   }
 

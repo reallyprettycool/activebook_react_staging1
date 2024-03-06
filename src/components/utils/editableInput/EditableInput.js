@@ -4,11 +4,14 @@ import React, { Component } from 'react';
  * This component is an editable input field
  * @param props - The props of the component
  * @returns {JSX.Element}
+ *
+ * @author Franklin Neves Filho
  */
 class EditableInput extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            hasEdited: false,          // Set the initial state of hasEdited to false
             placeholder: props.placeholder || 'Click to edit', // Set a default placeholder
             isEditing: false,           // Set the initial state of isEditing to false
             editedValue: props.value,   // Set the initial state of editedValue to the value prop
@@ -36,12 +39,10 @@ class EditableInput extends Component {
     };
 
     render() {
-        const { value } = this.props;
-
         return (
             <div
                 className={'d-flex flex-row justify-content-center align-items-center'}
-                onDoubleClick={this.handleDoubleClick}>
+                onClick={this.handleDoubleClick}>
                 {this.state.isEditing ? (
                     <input
                         className={'m-auto text-center text-nowrap w-100'}
@@ -54,8 +55,8 @@ class EditableInput extends Component {
                     />
                 ) : (
                     //if the input has not been changed text-muted
-                    <p  className={'m-auto ' + (this.state.editedValue === ''? 'text-muted' : '')}>
-                        {value || this.state.placeholder}
+                    <p className={'m-auto text-center text-nowrap w-100 ' + (this.state.editedValue ? '' : 'text-muted')}>
+                        {this.state.editedValue || this.state.placeholder}
                     </p>
                 )}
             </div>

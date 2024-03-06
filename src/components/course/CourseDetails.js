@@ -37,7 +37,7 @@ class CourseDetails extends Component {
         "Cache-Control": "no-cache",
       },
     });
-    this.service2 = new AuthService();
+    this.authService = new AuthService();
     this.courseActions = [
       { id: "editCourse", fafaClass: "fa fa-edit", text: "Edit this course" },
       {
@@ -111,7 +111,7 @@ class CourseDetails extends Component {
 
   fetchUser() {
     // console.log('fetching user')
-    this.service2
+    this.authService
       .loggedin()
       .then((response) => {
         this.setState({ loggedInUser: response, redirect: false });
@@ -212,7 +212,12 @@ class CourseDetails extends Component {
             />
           ); //  {...props} => so we can have 'this.props.history' in Edit.js
         case "createContent":
-          return <CreateContent />;
+          return <CreateContent
+              theCourse={this.state.theCourse}
+              getCourse={this.getOneCourse}
+              toggleForm={this.toggleFormsFromComponent}
+              {...this.props}
+          />;
         case "showAssignments":
           return this.showAssignments();
         case "showGrades":

@@ -51,9 +51,9 @@ const DndActivityOptions = (props) => {
                     </div>
                 </div>
             </div>
-            <div className="col-md-4 d-flex flex-column">
+            <div className="col col-lg-7 d-flex flex-column">
                 <div className="row justify-content-around align-items-center">
-                    <div className="col-5 d-flex flex-column justify-content-center align-items-center border  rounded">
+                    <div className="col col-md-5 d-flex flex-column justify-content-center align-items-center border  rounded">
                         <p>Double click to edit:</p>
                         <DroppableContainers
                             droppableId={'New'}
@@ -73,12 +73,12 @@ const DndActivityOptions = (props) => {
 
                         </DroppableContainers>
                     </div>
-                    <div className="col-5 d-flex flex-column justify-content-center align-items-center">
+                    <div className="col-6 col-md-5">
                         <DroppableContainers
-                            className={'trash-bin'}
+                            className={'trash-bin p-3'}
                             droppableId={'trash'}
                             container={{id: 'trash', title: "trash"}}>
-                            <p className="h3 ml-3 mr-3">
+                            <p className={'h4 p-1'}>
                                 Remove Draggable
                             </p>
                         </DroppableContainers>

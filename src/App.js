@@ -40,10 +40,6 @@ class App extends Component {
     this.fetchUser();
   }
 
-  // componentDidUpdate () {
-  //   this.fetchUser();
-  // }
-
   setUser = (userObj) => {
     this.setState({
       loggedInUser: userObj,
@@ -72,6 +68,7 @@ class App extends Component {
           this.setState({
             loggedInUser: null,
           });
+          console.log("error: ",err)
         });
     }
   }
