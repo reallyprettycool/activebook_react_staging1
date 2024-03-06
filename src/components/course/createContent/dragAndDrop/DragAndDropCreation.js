@@ -12,6 +12,7 @@ import EditableInput from "../../../utils/editableInput/EditableInput";
  * This component is used to create a drag and drop activity.
  * @param props - droppableContainers, extraAnswers, isOrdered, activityTitle
  * @returns {JSX.Element}
+ *
  * @author Franklin Neves Filho
  */
 class DragAndDropCreation extends Component {

@@ -4,6 +4,8 @@ import React, { Component } from 'react';
  * This component is an editable input field
  * @param props - The props of the component
  * @returns {JSX.Element}
+ *
+ * @author Franklin Neves Filho
  */
 class EditableInput extends Component {
     constructor(props) {

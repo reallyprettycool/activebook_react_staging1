@@ -85,8 +85,8 @@ class CreateContent extends Component {
         return <OtherActivities />;
       case "dragAndDrop":
         return <DragAndDropCreation
-            onSave={this.saveActivity}
-            editActivity={this.state.editThisActivity}/>;
+                  onSave={this.saveActivity}
+                  editActivity={this.state.editThisActivity}/>;
       default:
         return <CreatedActivities
             getActivityInfo={this.getActivityInfo}
