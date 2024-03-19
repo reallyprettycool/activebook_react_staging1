@@ -24,7 +24,7 @@ class CourseDetails extends Component {
       theCourse: this.props.oneCourse,
       editCourse: false,
       addStudents: false,
-      whatToShow: "createContent", // Should be "showCourse" for production
+      whatToShow: "showCourse", // Should be "showCourse" for production
       theAssignment: {},
       loggedInUser: this.props.userInSession,
       redirect: false,
@@ -102,7 +102,7 @@ class CourseDetails extends Component {
   };
 
   componentDidMount() {
-    const {params} = this.props.match;
+    // const {params} = this.props.match;
     // console.log('Props have the user? ', this.props.userInSession.firstname)
     // console.log('Props have a course? ', this.props.oneCourse)
     // if( this.props.userInSession === null ) {
@@ -277,7 +277,7 @@ class CourseDetails extends Component {
     const { params } = this.props.match;
     this.service
       .delete(`/courses/${params.id}`)
-      .then((responseFromApi) => {
+      .then(() => {
         this.service
           .get("/courses")
           .then((responseFromApi) => {

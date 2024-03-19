@@ -70,13 +70,13 @@ class CreatedActivities extends Component {
   }
 
   onDelete = (activityId) => {
-        this.deleteActivity(activityId, (response) => {
-            console.log(response.data);
+        this.deleteActivity(activityId, () => {
             this.getActivityInfo((response) => {
                 this.setState({
                     activityInfo: response.data
                 });
             });
+            alert('Activity deleted');
         });
 
   }
@@ -118,27 +118,35 @@ class CreatedActivities extends Component {
                         <thead>
                         <tr>
                             <th scope="col">Title</th>
-                            <th scope="col">Description</th>
+                            {/*description column that hides when shrunken*/}
+                            <th scope="col" className={'d-none d-lg-table-cell'}>Description</th>
                             <th scope={'col'}>Activity Type</th>
                             <th scope={"col-1"}></th>
                             <th scope={"col-1"}>Delete</th>
                         </tr>
                         </thead>
                         <tbody>
-                            {this.state.activityInfo.map((activity) => {
-                                return (
-                                    <tr key={activity._id}>
-                                        <td>{activity.title}</td>
-                                        <td>{activity.description}</td>
-                                        <td>{activity.activityType}</td>
-                                        <td className={'col-1'}>{this.actionButtons(activity._id)}</td>
-                                        <td className={'col-1'}>
-                                            <button className={'btn btn-md btn-outline-danger rounded-circle'}
-                                                    onClick={()=>this.onDelete(activity._id)}>X</button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                        {
+                            this.state.activityInfo.length > 0 ? (
+                                this.state.activityInfo.map((activity) => {
+                                    return (
+                                        <tr key={activity._id}>
+                                            <td className={'font-weight-bold'}>{activity.title}</td>
+                                            <td className={'d-none d-lg-table-cell'}>{activity.description}</td>
+                                            <td className={'font-italic'}>{activity.activityType}</td>
+                                            <td className={'col-1'}>{this.actionButtons(activity._id)}</td>
+                                            <td className={'col-1'}>
+                                                <button className={'btn btn-md btn-outline-danger rounded-circle'}
+                                                        onClick={()=>this.onDelete(activity._id)}>X</button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })) : (
+                                <tr>
+                                    <td colSpan={5} className={'text-center'}>No activities created yet</td>
+                                </tr>
+                            )
+                        }
                         </tbody>
                     </table>
                 </div>
