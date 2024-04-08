@@ -56,7 +56,6 @@ class CourseDetails extends Component {
         fafaClass: "fa fa-folder",
         text: "Add assignments",
       },
-      { id: "addStudents", fafaClass: "fa fa-user-plus", text: "Add students" },
       {
         id: "addStudents",
         fafaClass: "fa fa-user-plus",
