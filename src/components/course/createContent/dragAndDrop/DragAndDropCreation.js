@@ -372,14 +372,14 @@ class DragAndDropCreation extends Component {
                     />
                     {
                         this.state.displayPreview &&
-                        <PreviewActivityModal onClose={this.displayPreview}>
+                        <PopUpModal onClose={this.displayPreview}>
                             <DragAndDropActivity
                                 droppableContainers={this.state.droppableContainers}
                                 extraAnswers={this.state.extraAnswers}
                                 isOrdered={this.state.isOrdered}
                                 activityTitle={this.state.activityTitle}
                             />
-                        </PreviewActivityModal>
+                        </PopUpModal>
                     }
                 </DragDropContext>
             </div>
