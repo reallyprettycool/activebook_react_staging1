@@ -14,6 +14,7 @@ import ShowAssignments from "../assignments/ShowAssigments";
 import EditAssignments from "../assignments/EditAssignment";
 import AddInstructors from "../course/AddInstructors";
 import ShowGrades from "../assignments/ShowGrades";
+import Modules from "./module/Modules";
 
 // been getting error 304 Not Modified when trying to reload this page.
 
@@ -40,13 +41,27 @@ class CourseDetails extends Component {
     });
     this.authService = new AuthService();
     this.courseActions = [
-      { id: "editCourse", fafaClass: "fa fa-edit", text: "Edit this course" },
+      {
+        id: "editCourse",
+        fafaClass: "fa fa-edit",
+        text: "Edit this course"
+      },
+      {
+        id: "modules",
+        fafaClass: "fa fa-folder",
+        text: "Modules",
+      },
       {
         id: "addAssignments",
         fafaClass: "fa fa-folder",
         text: "Add assignments",
       },
       { id: "addStudents", fafaClass: "fa fa-user-plus", text: "Add students" },
+      {
+        id: "addStudents",
+        fafaClass: "fa fa-user-plus",
+        text: "Add students"
+      },
       {
         id: "showStudents",
         fafaClass: "fa fa-address-card",
@@ -178,6 +193,15 @@ class CourseDetails extends Component {
               {...this.props}
             />
           ); //  {...props} => so we can have 'this.props.history' in Edit.js
+        case "modules":
+            return (
+                <Modules
+                    theCourse={this.state.theCourse}
+                    getCourse={this.getOneCourse}
+                    toggleForm={this.toggleFormsFromComponent}
+                    {...this.props}
+                />
+            )
         case "addAssignments":
           return (
             <AddAssignments
