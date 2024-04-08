@@ -175,7 +175,7 @@ It is essentially a wrapper component that will display whatever is passed as a 
 ```
 import React, { Component } from 'react';
 import { Button } from 'antd';
-import PreviewActivityModal from "../../../utils/previewActivty/PreviewActivityModal";
+import PopUpModal from "../../../utils/previewActivty/PopUpModal";
 
 class MyActivity extends Component {
   constructor(props) {
@@ -195,10 +195,10 @@ class MyActivity extends Component {
         <Button onClick={()=> this.setState({ previewModal: true })}>Preview</Button>
         {
             this.state.previewModal &&
-                <PreviewActivityModal onClose={this.displayPreview}>
+                <PopUpModal onClose={this.displayPreview}>
                     <myActivityComponent
                         {...this.props}/>
-                </PreviewActivityModal>
+                </PopUpModal>
         }
     );
   }
