@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { RingLoader } from "react-spinners";
-import PreviewActivityModal from "../../utils/previewActivty/PreviewActivityModal";
+import PopUpModal from "../../utils/popUpModal/popUpModal";
 import DragAndDropActivity from "../../activities/created/dragAndDrop/DragAndDropActivity";
 
 /**
@@ -183,9 +183,9 @@ class CreatedActivities extends Component {
         </div>
           {
               this.state.displayPreview && (
-                  <PreviewActivityModal onClose={this.previewOnClose}>
+                  <PopUpModal onClose={this.previewOnClose}>
                       {this.getPreviewActivity()}
-                  </PreviewActivityModal>
+                  </PopUpModal>
               )
           }
       </div>
