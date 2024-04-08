@@ -165,7 +165,7 @@ class CreatedActivities extends Component {
   }
   render() {
     return (
-      <div className="container-xs text-center mr-md-5 p-2 border">
+      <div className="container-xs text-center mt-3 mt-md-4 mr-md-5 p-2 border">
         <h2>Created Activities</h2>
         <div className="d-flex justify-content-center">
           {this.showActivities()}
