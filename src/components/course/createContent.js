@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import H5P from "./createContent/H5P";
-import MultipleChoice from "./createContent/MultipleChoice";
+import MultipleChoice from "./createContent/multipleChoice/MultipleChoiceCreation";
 import TextImages from "./createContent/textImages";
 import OtherActivities from "./createContent/OtherActivities";
 import CreatedActivities from "./createContent/CreatedActivities";
