@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { RingLoader } from "react-spinners";
-import PreviewActivityModal from "../../utils/previewActivty/PreviewActivityModal";
+import PopUpModal from "../../utils/popUpModal/popUpModal";
 import DragAndDropActivity from "../../activities/created/dragAndDrop/DragAndDropActivity";
 
 /**
@@ -29,10 +29,10 @@ class CreatedActivities extends Component {
     };
 
     this.showItem = props.showItem;
-    this.getActivityInfo = props.getActivityInfo;
     this.getActivity = props.getActivity;
+    this.getActivityInfo = props.getActivityInfo;
     this.setEdit = props.setEdit;
-
+    this.deleteActivity = props.deleteActivity;
   }
 
   onPreview = (activityId) => {
@@ -69,6 +69,27 @@ class CreatedActivities extends Component {
     });
   }
 
+  onDelete = (activityId) => {
+        this.deleteActivity(activityId, () => {
+            this.getActivityInfo((response) => {
+                this.setState({
+                    activityInfo: response.data
+                });
+            });
+            alert('Activity deleted');
+        });
+
+  }
+
+  dropdownStyle = {
+      minWidth: 'unset',
+      width: 'auto',
+      textAlign: 'center',
+      padding: '0',
+      margin: '0',
+      marginTop: '0.5rem'
+  }
+
   actionButtons = (activityId) => {
       return (
           <div className="dropdown rounded align-items-center justify-content-center">
@@ -76,9 +97,13 @@ class CreatedActivities extends Component {
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Actions
               </button>
-              <div className="dropdown-menu border shadow-lg mt-2 m-0 p-0" aria-labelledby="dropdownMenuButton">
-                  <a className="dropdown-item mb-1 rounded-top bg-primary" href="#" onClick={()=> this.onEdit(activityId)}>Edit</a>
-                  <a className="dropdown-item mt-1 rounded-bottom bg-info" href="#" onClick={()=> this.onPreview(activityId)}>Preview</a>
+              <div className="dropdown-menu dropdown-menu-right border shadow-lg"
+                     style={this.dropdownStyle}
+                   aria-labelledby="dropdownMenuButton">
+                  <button className="dropdown-item mb-1 rounded-top bg-primary"
+                     onClick={()=> this.onEdit(activityId)}>Edit</button>
+                  <button className="dropdown-item mt-1 rounded-bottom bg-info"
+                     onClick={()=> this.onPreview(activityId)}>Preview</button>
               </div>
           </div>
       )
@@ -93,24 +118,35 @@ class CreatedActivities extends Component {
                         <thead>
                         <tr>
                             <th scope="col">Title</th>
-                            <th scope="col">Description</th>
+                            {/*description column that hides when shrunken*/}
+                            <th scope="col" className={'d-none d-lg-table-cell'}>Description</th>
                             <th scope={'col'}>Activity Type</th>
                             <th scope={"col-1"}></th>
-                            <th scope={"col-1"}></th>
+                            <th scope={"col-1"}>Delete</th>
                         </tr>
                         </thead>
                         <tbody>
-                            {this.state.activityInfo.map((activity) => {
-                                return (
-                                    <tr key={activity._id}>
-                                        <td>{activity.title}</td>
-                                        <td>{activity.description}</td>
-                                        <td>{activity.activityType}</td>
-                                        <td className={'col-1'}>{this.actionButtons(activity._id)}</td>
-                                        <td className={'col-1'}><button className={'btn btn-sm btn-outline-danger rounded-circle'}>X</button></td>
-                                    </tr>
-                                );
-                            })}
+                        {
+                            this.state.activityInfo.length > 0 ? (
+                                this.state.activityInfo.map((activity) => {
+                                    return (
+                                        <tr key={activity._id}>
+                                            <td className={'font-weight-bold'}>{activity.title}</td>
+                                            <td className={'d-none d-lg-table-cell'}>{activity.description}</td>
+                                            <td className={'font-italic'}>{activity.activityType}</td>
+                                            <td className={'col-1'}>{this.actionButtons(activity._id)}</td>
+                                            <td className={'col-1'}>
+                                                <button className={'btn btn-md btn-outline-danger rounded-circle'}
+                                                        onClick={()=>this.onDelete(activity._id)}>X</button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })) : (
+                                <tr>
+                                    <td colSpan={5} className={'text-center'}>No activities created yet</td>
+                                </tr>
+                            )
+                        }
                         </tbody>
                     </table>
                 </div>
@@ -129,7 +165,7 @@ class CreatedActivities extends Component {
   }
   render() {
     return (
-      <div className="container-xs text-center mr-md-5 p-2 border">
+      <div className="container-xs text-center mt-3 mt-md-4 mr-md-5 p-2 border">
         <h2>Created Activities</h2>
         <div className="d-flex justify-content-center">
           {this.showActivities()}
@@ -147,9 +183,9 @@ class CreatedActivities extends Component {
         </div>
           {
               this.state.displayPreview && (
-                  <PreviewActivityModal onClose={this.previewOnClose}>
+                  <PopUpModal onClose={this.previewOnClose}>
                       {this.getPreviewActivity()}
-                  </PreviewActivityModal>
+                  </PopUpModal>
               )
           }
       </div>

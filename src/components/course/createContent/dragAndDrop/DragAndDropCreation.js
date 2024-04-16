@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import DroppableContainers from "./DroppableContainers";
 import DraggableItem from "./DraggableItem";
-import PreviewActivityModal from "../../../utils/previewActivty/PreviewActivityModal";
+import PopUpModal from "../../../utils/popUpModal/popUpModal";
 import DragAndDropActivity from "../../../activities/created/dragAndDrop/DragAndDropActivity";
 import "../../../activities/created/dragAndDrop/DragAndDropActivity.css";
 import DndActivityOptions from "./DndActivityOptions";
@@ -372,14 +372,14 @@ class DragAndDropCreation extends Component {
                     />
                     {
                         this.state.displayPreview &&
-                        <PreviewActivityModal onClose={this.displayPreview}>
+                        <PopUpModal onClose={this.displayPreview}>
                             <DragAndDropActivity
                                 droppableContainers={this.state.droppableContainers}
                                 extraAnswers={this.state.extraAnswers}
                                 isOrdered={this.state.isOrdered}
                                 activityTitle={this.state.activityTitle}
                             />
-                        </PreviewActivityModal>
+                        </PopUpModal>
                     }
                 </DragDropContext>
             </div>

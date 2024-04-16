@@ -64,6 +64,12 @@ class CreateContent extends Component {
     }
   }
 
+  deleteActivity = async (activityId, then) => {
+    return this.service.delete("/" + activityId)
+        .then((response) => then(response))
+        .catch((err) => console.log(err))
+  }
+
   editThisActivity = (activity) => {
     this.setState({
       ...this.state,
@@ -93,6 +99,7 @@ class CreateContent extends Component {
             getActivity={this.getActivity}
             showItem={this.showItem}
             setEdit={this.editThisActivity}
+            deleteActivity={this.deleteActivity}
             {...this.props}/> // So that we can redirect to the activity page with edit
     }
   };
