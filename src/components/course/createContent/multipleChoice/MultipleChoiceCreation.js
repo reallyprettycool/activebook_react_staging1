@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
+
 
 const Title = styled.h1`
     text-align: center;
@@ -139,253 +140,321 @@ const NavigationContainer = styled.div`
     margin-top: 20px;
 `;
 
-
-const QuizCreator = () => {
-    const [quizTitle, setQuizTitle] = useState('');
-    const [questions, setQuestions] = useState([]);
-    const [currentView, setCurrentView] = useState('create');
-    const [userAnswers, setUserAnswers] = useState({});
-    const [quizCompleted, setQuizCompleted] = useState(false);
-
-    const handleCreateNewQuiz = () => {
-        setQuizTitle('');
-        setQuestions([]);
-        setUserAnswers({});
-        setQuizCompleted(false);
-        setCurrentView('create');
+/*
+* =========================================================================
+* =========================================================================
+* =========================================================================
+*/
+class MultipleChoiceCreation extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      quizTitle: '',
+      questions: [],
+      currentView: 'create',
+      userAnswers: {},
+      quizCompleted: false,
+      currentPreviewIndex: 0,
     };
 
-    const handleAddQuestion = () => {
-        if (questions.length < 10) {
-            setQuestions([...questions, { questionText: '', options: ['', ''], correctIndexes: [] }]);
-        } else {
-            alert('Question limit reached');
-        }
-    };
 
-    const handleOptionChange = (questionIndex, optionIndex, value) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[questionIndex].options[optionIndex] = value;
-        setQuestions(updatedQuestions);
+  }
 
-        if (optionIndex === updatedQuestions[questionIndex].options.length - 1 && value && updatedQuestions[questionIndex].options.length < 4) {
-            updatedQuestions[questionIndex].options.push('');
-            setQuestions(updatedQuestions);
-        }
-    };
+  handleCreateNewQuiz = () => {
+    this.setState({
+        quizTitle: '',
+        questions: [],
+        userAnswers: {},
+        quizCompleted: false,
+        currentView: 'create',
+        });
+  }
 
-    const handleCorrectOptionChange = (questionIndex, optionIndex) => {
-        const updatedQuestions = [...questions];
-        const index = updatedQuestions[questionIndex].correctIndexes.indexOf(optionIndex);
-        if (index > -1) {
-            updatedQuestions[questionIndex].correctIndexes.splice(index, 1);
-        } else {
-            updatedQuestions[questionIndex].correctIndexes.push(optionIndex);
-        }
-        setQuestions(updatedQuestions);
-    };
+  handleAddQuestion = () => {
+    if (this.state.questions.length < 10) {
+      this.setState({
+        questions: [...this.state.questions, { questionText: '', options: ['', ''], correctIndexes: [] }],
+      });
+    } else {
+      alert('Question limit reached');
+    }
+  }
 
-    const handleUserAnswerChange = (questionIndex, optionIndex, isSelected) => {
-        const updatedAnswers = { ...userAnswers };
-        const selectedAnswers = updatedAnswers[questionIndex] || [];
+  handleOptionChange = (questionIndex, optionIndex, value) => {
 
-        if (isSelected) {
-            if (!selectedAnswers.includes(optionIndex)) {
-                selectedAnswers.push(optionIndex);
-            }
-        } else {
-            const indexToRemove = selectedAnswers.indexOf(optionIndex);
-            if (indexToRemove > -1) {
-                selectedAnswers.splice(indexToRemove, 1);
-            }
-        }
+    const updatedQuestions = [...this.state.questions];
+    updatedQuestions[questionIndex].options[optionIndex] = value;
 
-        updatedAnswers[questionIndex] = selectedAnswers;
-        setUserAnswers(updatedAnswers);
-    };
+    this.setState({
+      questions: updatedQuestions,
+    });
 
-    const handleDeleteQuestion = (questionIndex) => {
-        const updatedQuestions = questions.filter((_, idx) => idx !== questionIndex);
-        setQuestions(updatedQuestions);
-    };
+    if (optionIndex === updatedQuestions[questionIndex].options.length - 1 && value && updatedQuestions[questionIndex].options.length < 4) {
 
-    const renderQuestionInputs = () => {
-        return questions.map((question, questionIndex) => (
-            <QuestionContainer key={questionIndex}>
-                <QuestionInputContainer>
-                    <Input
-                        type="text"
-                        placeholder={`Question ${questionIndex + 1}`}
-                        value={question.questionText}
-                        onChange={(e) => {
-                            const newQuestions = [...questions];
-                            newQuestions[questionIndex].questionText = e.target.value;
-                            setQuestions(newQuestions);
-                        }}
+      updatedQuestions[questionIndex].options.push('');
+      this.setState({
+        questions: updatedQuestions,
+      });
+
+    }
+  };
+
+  handleCorrectOptionChange = (questionIndex, optionIndex) => {
+    const updatedQuestions = [...this.state.questions];
+    const index = updatedQuestions[questionIndex].correctIndexes.indexOf(optionIndex);
+    if (index > -1) {
+      updatedQuestions[questionIndex].correctIndexes.splice(index, 1);
+    } else {
+      updatedQuestions[questionIndex].correctIndexes.push(optionIndex);
+    }
+    this.setState({
+      questions: updatedQuestions,
+    });
+  };
+
+  handleUserAnswerChange = (questionIndex, optionIndex, isSelected) => {
+    const updatedAnswers = { ...this.state.userAnswers };
+    const selectedAnswers = updatedAnswers[questionIndex] || [];
+
+    if (isSelected) {
+      if (!selectedAnswers.includes(optionIndex)) {
+        selectedAnswers.push(optionIndex);
+      }
+    } else {
+      const indexToRemove = selectedAnswers.indexOf(optionIndex);
+      if (indexToRemove > -1) {
+        selectedAnswers.splice(indexToRemove, 1);
+      }
+    }
+
+    updatedAnswers[questionIndex] = selectedAnswers;
+
+    this.setState({
+        userAnswers: updatedAnswers,
+    });
+
+  };
+
+  handleDeleteQuestion = (questionIndex) => {
+    const updatedQuestions = this.state.questions.filter((_, idx) => idx !== questionIndex);
+    this.setState({
+      questions: updatedQuestions,
+    })
+  };
+
+  renderQuestionInputs = () => {
+    return this.state.questions.map((question, questionIndex) => (
+        <QuestionContainer key={questionIndex}>
+          <QuestionInputContainer>
+            <Input
+                type="text"
+                placeholder={`Question ${questionIndex + 1}`}
+                value={question.questionText}
+                onChange={(e) => {
+                  const newQuestions = [...this.state.questions];
+                  newQuestions[questionIndex].questionText = e.target.value;
+                }}
+            />
+            {question.options.map((option, optionIndex) => (
+                <OptionContainer key={optionIndex}>
+                  <Input
+                      type="text"
+                      placeholder={`Option ${optionIndex + 1}`}
+                      value={option}
+                      onChange={(e) => {
+                          this.handleOptionChange(questionIndex, optionIndex, e.target.value)
+                      }}
+                  />
+                  <CheckboxLabel>
+                    <input
+                        type="checkbox"
+                        checked={question.correctIndexes.includes(optionIndex)}
+                        onChange={() => this.handleCorrectOptionChange(questionIndex, optionIndex)}
                     />
-                    {question.options.map((option, optionIndex) => (
-                        <OptionContainer key={optionIndex}>
-                            <Input
-                                type="text"
-                                placeholder={`Option ${optionIndex + 1}`}
-                                value={option}
-                                onChange={(e) => handleOptionChange(questionIndex, optionIndex, e.target.value)}
-                            />
-                            <CheckboxLabel>
-                                <input
-                                    type="checkbox"
-                                    checked={question.correctIndexes.includes(optionIndex)}
-                                    onChange={() => handleCorrectOptionChange(questionIndex, optionIndex)}
-                                />
-                                Correct Answer(s)
-                            </CheckboxLabel>
-                        </OptionContainer>
-                    ))}
-                </QuestionInputContainer>
-                <DeleteButton onClick={() => handleDeleteQuestion(questionIndex)}>&times;</DeleteButton>
-            </QuestionContainer>
-        ));
-    };
+                    Correct Answer(s)
+                  </CheckboxLabel>
+                </OptionContainer>
+            ))}
+          </QuestionInputContainer>
+          <DeleteButton onClick={() => this.handleDeleteQuestion(questionIndex)}>&times;</DeleteButton>
+        </QuestionContainer>
+    ));
+  };
 
-    const [currentPreviewIndex, setCurrentPreviewIndex] = useState(0);
+  handleNextPreviewQuestion = () => {
+    this.setState({
+        currentPreviewIndex: Math.min(this.state.questions.length - 1, this.state.currentPreviewIndex + 1),
+    });
+  };
 
-    const handleNextPreviewQuestion = () => {
-        setCurrentPreviewIndex((prevIndex) => Math.min(questions.length - 1, prevIndex + 1));
-    };
+  handlePreviousPreviewQuestion = () => {
+    this.setState({
+        currentPreviewIndex: Math.max(0, this.state.currentPreviewIndex - 1),
+    });
+  };
 
-    const handlePreviousPreviewQuestion = () => {
-        setCurrentPreviewIndex((prevIndex) => Math.max(0, prevIndex - 1));
-    };
+  renderPreview = () => {
+    if (this.state.currentPreviewIndex >= this.state.questions.length || this.state.currentPreviewIndex < 0) {
+      return <div>No question to display</div>;
+    }
 
-    const renderPreview = () => {
-        if (currentPreviewIndex >= questions.length || currentPreviewIndex < 0) {
-            return <div>No question to display</div>;
-        }
-
-        const question = questions[currentPreviewIndex];
-        return (
-            <div>
-                <EditButton onClick={() => setCurrentView('create')}>Edit</EditButton>
-                <h2>Preview: {quizTitle}</h2>
-                <QuestionText>{`"${question.questionText}"`}</QuestionText>
-                <OptionsContainer>
-                    {question.options.map((option, optionIndex) => (
-                        <OptionBox key={`preview-option-${optionIndex}`}>
-                            <input
-                                type="checkbox" // Use checkboxes in the preview for visual consistency, though they don't function
-                                checked={question.correctIndexes.includes(optionIndex)}
-                                readOnly
-                            />
-                            <OptionLabel>{option}</OptionLabel>
-                        </OptionBox>
-                    ))}
-                </OptionsContainer>
-                <NavigationContainer>
-                    {currentPreviewIndex > 0 && (
-                        <Button onClick={handlePreviousPreviewQuestion}>Previous</Button>
-                    )}
-                    <Button onClick={() => handleQuizBegin('take')}>Begin Quiz</Button>
-                    {currentPreviewIndex < questions.length - 1 && (
-                        <Button onClick={handleNextPreviewQuestion}>Next</Button>
-                    )}
-                </NavigationContainer>
-            </div>
-        );
-    };
-
-    const handleQuizBegin = () => {
-        setCurrentView('take');
-        setCurrentPreviewIndex(0);
-        setUserAnswers({});
-    };
-
-    const handleOptionSelect = (questionIndex, optionIndex) => {
-        const currentAnswers = userAnswers[questionIndex] ? [...userAnswers[questionIndex]] : [];
-        const index = currentAnswers.indexOf(optionIndex);
-        if (index > -1) {
-            currentAnswers.splice(index, 1); // Unselect
-        } else {
-            currentAnswers.push(optionIndex); // Select
-        }
-        setUserAnswers({ ...userAnswers, [questionIndex]: currentAnswers });
-    };
-
-    const renderQuiz = () => {
-        if (quizCompleted) {
-            let score = 0;
-            Object.keys(userAnswers).forEach((questionIndex) => {
-                const questionAnswers = userAnswers[questionIndex];
-                const correctAnswers = questions[questionIndex].correctIndexes;
-
-                // Convert both to strings to compare easily
-                if (JSON.stringify(questionAnswers.sort()) === JSON.stringify(correctAnswers.sort())) {
-                    score += 1;
-                }
-            });
-
-            return (
-                <div>
-                    <h2>Quiz Completed!</h2>
-                    <p>Your score is {score} out of {questions.length}.</p>
-                    <Button onClick={handleCreateNewQuiz}>Create a New Quiz</Button>
-                </div>
-            );
-        }
-
-        const question = questions[currentPreviewIndex];
-        return (
-            <div>
-                <QuestionText>Question {currentPreviewIndex + 1}: <span>{question.questionText}</span></QuestionText>
-                <OptionsContainer>
-                    {question.options.map((option, optionIndex) => (
-                        <OptionBox key={optionIndex} onClick={() => handleOptionSelect(currentPreviewIndex, optionIndex)}>
-                            <AnswerOptionContainer>
-                                <input
-                                    type="checkbox"
-                                    name={`question_${currentPreviewIndex}`}
-                                    checked={userAnswers[currentPreviewIndex] && userAnswers[currentPreviewIndex].includes(optionIndex)}
-                                />
-                                {option}
-                            </AnswerOptionContainer>
-                        </OptionBox>
-                    ))}
-                </OptionsContainer>
-                <div>
-                    {currentPreviewIndex > 0 && <Button onClick={() => setCurrentPreviewIndex(currentPreviewIndex - 1)}>Previous</Button>}
-                    {currentPreviewIndex < questions.length - 1 ? (
-                        <Button onClick={() => setCurrentPreviewIndex(currentPreviewIndex + 1)}>Next</Button>
-                    ) : (
-                        <Button onClick={() => setQuizCompleted(true)}>Submit Quiz</Button>
-                    )}
-                </div>
-            </div>
-        );
-    };
+    const question = this.state.questions[this.state.currentPreviewIndex];
 
     return (
-        <Container className="center-box">
-            {currentView === 'create' && (
-                <>
-                    <Title>Create Multiple Choice Assessment</Title>
-                    <Input
-                        type="text"
-                        placeholder="Quiz Title"
-                        value={quizTitle}
-                        onChange={(e) => setQuizTitle(e.target.value)}
+        <div>
+          <EditButton onClick={() => {
+             this.setState({
+                 currentView: 'create',
+             })
+          }}>Edit</EditButton>
+          <h2>Preview: {this.state.quizTitle}</h2>
+          <QuestionText>{`"${question.questionText}"`}</QuestionText>
+          <OptionsContainer>
+            {question.options.map((option, optionIndex) => (
+                <OptionBox key={`preview-option-${optionIndex}`}>
+                  <input
+                      type="checkbox" // Use checkboxes in the preview for visual consistency, though they don't function
+                      checked={question.correctIndexes.includes(optionIndex)}
+                      readOnly
+                  />
+                  <OptionLabel>{option}</OptionLabel>
+                </OptionBox>
+            ))}
+          </OptionsContainer>
+          <NavigationContainer>
+            {this.state.currentPreviewIndex > 0 && (
+                <Button onClick={this.handlePreviousPreviewQuestion}>Previous</Button>
+            )}
+            <Button onClick={() => this.handleQuizBegin('take')}>Begin Quiz</Button>
+            {this.state.currentPreviewIndex < this.state.questions.length - 1 && (
+                <Button onClick={this.handleNextPreviewQuestion}>Next</Button>
+            )}
+          </NavigationContainer>
+        </div>
+    );
+  };
+
+  handleQuizBegin = () => {
+    this.setState({
+        currentView: 'take',
+        currentPreviewIndex: 0,
+        userAnswers: {},
+    });
+  };
+
+  handleOptionSelect = (questionIndex, optionIndex) => {
+    const currentAnswers = this.state.userAnswers[questionIndex] ? [...this.state.userAnswers[questionIndex]] : [];
+    const index = currentAnswers.indexOf(optionIndex);
+    if (index > -1) {
+      currentAnswers.splice(index, 1); // Unselect
+    } else {
+      currentAnswers.push(optionIndex); // Select
+    }
+
+    this.setState({
+        userAnswers: { ...this.state.userAnswers, [questionIndex]: currentAnswers },
+    })
+  };
+
+  renderQuiz = () => {
+    if (this.state.quizCompleted) {
+      let score = 0;
+      Object.keys(this.state.userAnswers).forEach((questionIndex) => {
+        const questionAnswers = this.state.userAnswers[questionIndex];
+        const correctAnswers = this.state.questions[questionIndex].correctIndexes;
+
+        // Convert both to strings to compare easily
+        if (JSON.stringify(questionAnswers.sort()) === JSON.stringify(correctAnswers.sort())) {
+          score += 1;
+        }
+      });
+
+      return (
+          <div>
+            <h2>Quiz Completed!</h2>
+            <p>Your score is {score} out of {this.state.questions.length}.</p>
+            <Button onClick={this.handleCreateNewQuiz}>Create a New Quiz</Button>
+          </div>
+      );
+    }
+
+    const question = this.state.questions[this.state.currentPreviewIndex];
+
+    return (
+        <div>
+          <QuestionText>Question {this.state.currentPreviewIndex + 1}: <span>{question.questionText}</span></QuestionText>
+          <OptionsContainer>
+            {question.options.map((option, optionIndex) => (
+                <OptionBox key={optionIndex} onClick={() => this.handleOptionSelect(this.state.currentPreviewIndex, optionIndex)}>
+                  <AnswerOptionContainer>
+                    <input
+                        type="checkbox"
+                        name={`question_${this.state.currentPreviewIndex}`}
+                        checked={this.state.userAnswers[this.state.currentPreviewIndex] && this.state.userAnswers[this.state.currentPreviewIndex].includes(optionIndex)}
                     />
-                    {renderQuestionInputs()}
-                    <Button primary onClick={handleAddQuestion}>+ ADD QUESTION</Button>
-                    <Button onClick={() => setCurrentView('preview')}>Preview</Button>
-                </>
+                    {option}
+                  </AnswerOptionContainer>
+                </OptionBox>
+            ))}
+          </OptionsContainer>
+          <div>
+            {this.state.currentPreviewIndex > 0 && <Button onClick={() => {
+              this.setState({
+                currentPreviewIndex: this.state.currentPreviewIndex - 1,
+              })
+            }}>Previous</Button>}
+            {this.state.currentPreviewIndex < this.state.questions.length - 1 ? (
+                <Button onClick={() =>{
+                  this.setState({
+                    currentPreviewIndex: this.state.currentPreviewIndex + 1,
+                  })
+                }}>Next</Button>
+            ) : (
+                <Button onClick={() => {
+                  this.setState({
+                    quizCompleted: true,
+                  })
+                }}>Submit Quiz</Button>
             )}
-            {currentView === 'preview' && (
-                <>
-                    {renderPreview()}
-                </>
-            )}
-            {currentView === 'take' && renderQuiz()}
+          </div>
+        </div>
+    );
+  };
+
+  render(){
+    return (
+        <Container className="center-box">
+          {this.state.currentView === 'create' && (
+              <>
+                <Title>Create Multiple Choice Assessment</Title>
+                <Input
+                    type="text"
+                    placeholder="Quiz Title"
+                    value={this.state.quizTitle}
+                    onChange={(e) => {
+                      this.setState({
+                        quizTitle: e.target.value,
+                      })
+                    }}
+                />
+                {this.renderQuestionInputs()}
+                <Button primary onClick={this.handleAddQuestion}>+ ADD QUESTION</Button>
+                <Button onClick={() => {
+                  this.setState({
+                    currentView: 'preview',
+                  })
+                }}>Preview</Button>
+              </>
+          )}
+          {this.state.currentView === 'preview' && (
+              <>
+                {this.renderPreview()}
+              </>
+          )}
+          {this.state.currentView === 'take' && this.renderQuiz()}
         </Container>
     );
-};
+  }
 
-export default QuizCreator;
+}
+export default MultipleChoiceCreation

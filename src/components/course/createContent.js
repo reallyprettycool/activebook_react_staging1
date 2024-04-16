@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import H5P from "./createContent/H5P";
-import MultipleChoice from "./createContent/multipleChoice/MultipleChoiceCreation";
+import MultipleChoiceCreation from "./createContent/multipleChoice/MultipleChoiceCreation";
 import TextImages from "./createContent/textImages";
 import OtherActivities from "./createContent/OtherActivities";
 import CreatedActivities from "./createContent/CreatedActivities";
@@ -82,7 +82,7 @@ class CreateContent extends Component {
   renderForms = () => {
     switch (this.state.whatToShow) {
       case "multipleChoice":
-        return <MultipleChoice />;
+        return <MultipleChoiceCreation />;
       case "textImages":
         return <TextImages onValueEmitted={this.showItem} />;
       case "h5p":
