@@ -1,10 +1,5 @@
 import React, {Component} from 'react';
 import ModuleDetails from "./moduleDetails";
-import SelectActivities from "./selectActivities";
-
-function ReviewModule() {
-    return <>Review Modal</>;
-}
 
 class AddModule extends Component {
     constructor(props) {
@@ -35,11 +30,9 @@ class AddModule extends Component {
 
             screens: [
                 <ModuleDetails
-                    moduleDetails={moduleDetails}
+                    moduleDetails={this.moduleDetails}
                     onChange={this.moduleDetailsInputChange}
-                />,
-                <SelectActivities/>,
-                <ReviewModule/>
+                />
             ],
             currentScreen: 0
 
@@ -53,10 +46,7 @@ class AddModule extends Component {
                 <ModuleDetails
                     moduleDetails={this.state.moduleDetails}
                     onChange={this.moduleDetailsInputChange}
-                />,
-                <SelectActivities
-                />,
-                <ReviewModule/>
+                />
             ]
         });
     }
