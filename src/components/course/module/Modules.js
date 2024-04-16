@@ -14,7 +14,7 @@ class Modules extends Component {
             spinner: false,
             popUp: {
                 title: "Add Module",
-                display: true,
+                display: false,
                 screen: <AddModule/>
             }
         };

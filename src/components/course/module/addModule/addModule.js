@@ -29,10 +29,6 @@ class AddModule extends Component {
             selectedActivitiesId: [],
 
             screens: [
-                <ModuleDetails
-                    moduleDetails={this.moduleDetails}
-                    onChange={this.moduleDetailsInputChange}
-                />
             ],
             currentScreen: 0
 
