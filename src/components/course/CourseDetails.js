@@ -14,6 +14,7 @@ import ShowAssignments from "../assignments/ShowAssigments";
 import EditAssignments from "../assignments/EditAssignment";
 import AddInstructors from "../course/AddInstructors";
 import ShowGrades from "../assignments/ShowGrades";
+import Modules from "./module/Modules";
 
 // been getting error 304 Not Modified when trying to reload this page.
 
@@ -29,6 +30,7 @@ class CourseDetails extends Component {
       loggedInUser: this.props.userInSession,
       redirect: false,
     };
+
     this.service = axios.create({
       baseURL: process.env.REACT_APP_BASE_URL,
       withCredentials: true,
@@ -39,13 +41,26 @@ class CourseDetails extends Component {
     });
     this.authService = new AuthService();
     this.courseActions = [
-      { id: "editCourse", fafaClass: "fa fa-edit", text: "Edit this course" },
+      {
+        id: "editCourse",
+        fafaClass: "fa fa-edit",
+        text: "Edit this course"
+      },
+      {
+        id: "modules",
+        fafaClass: "fa fa-folder",
+        text: "Modules",
+      },
       {
         id: "addAssignments",
         fafaClass: "fa fa-folder",
         text: "Add assignments",
       },
-      { id: "addStudents", fafaClass: "fa fa-user-plus", text: "Add students" },
+      {
+        id: "addStudents",
+        fafaClass: "fa fa-user-plus",
+        text: "Add students"
+      },
       {
         id: "showStudents",
         fafaClass: "fa fa-address-card",
@@ -95,11 +110,13 @@ class CourseDetails extends Component {
         console.log("get course error ", err);
         // console.log('response headers: ',err.response.headers);
       });
+
+    console.log('the course: ', this.state.theCourse)
     // }
   };
 
   componentDidMount() {
-    const { params } = this.props.match;
+    // const {params} = this.props.match;
     // console.log('Props have the user? ', this.props.userInSession.firstname)
     // console.log('Props have a course? ', this.props.oneCourse)
     // if( this.props.userInSession === null ) {
@@ -107,6 +124,7 @@ class CourseDetails extends Component {
     // } else if (!this.props.oneCourse || this.props.oneCourse._id !== params){
     //   this.getOneCourse()
     // }
+
   }
 
   fetchUser() {
@@ -174,6 +192,15 @@ class CourseDetails extends Component {
               {...this.props}
             />
           ); //  {...props} => so we can have 'this.props.history' in Edit.js
+        case "modules":
+            return (
+                <Modules
+                    theCourse={this.state.theCourse}
+                    getCourse={this.getOneCourse}
+                    toggleForm={this.toggleFormsFromComponent}
+                    {...this.props}
+                />
+            )
         case "addAssignments":
           return (
             <AddAssignments
@@ -273,7 +300,7 @@ class CourseDetails extends Component {
     const { params } = this.props.match;
     this.service
       .delete(`/courses/${params.id}`)
-      .then((responseFromApi) => {
+      .then(() => {
         this.service
           .get("/courses")
           .then((responseFromApi) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import './PreviewActivityModal.css'; // Import CSS file for styling
+import './popUpModal.css'; // Import CSS file for styling
 
 /**
  * This component is a modal that displays a preview of the activity.
@@ -8,7 +8,7 @@ import './PreviewActivityModal.css'; // Import CSS file for styling
  * @constructor
  */
 
-function PreviewActivityModal(props) {
+function PopUpModal(props) {
 
     // Function to close the modal
     const handleClose = () => {
@@ -21,7 +21,7 @@ function PreviewActivityModal(props) {
         <div className="modal-overlay">
             <div className="modal-wrapper">
                 <div className="modal-header">
-                    <h5 className="modal-title">Preview</h5>
+                    <h5 className="modal-title">{props.title || 'preview'}</h5>
                     <button type="button" className="close" aria-label="Close" onClick={handleClose}>
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -34,4 +34,4 @@ function PreviewActivityModal(props) {
     );
 }
 
-export default PreviewActivityModal;
+export default PopUpModal;
