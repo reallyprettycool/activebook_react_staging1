@@ -1,0 +1,20 @@
+h2{
+    color: #14d14c;
+    text-align: center;
+    padding-top:2.5%;
+    padding-right: 15%;
+   }
+  
+  .linkVideo{
+      padding-left: 17%;
+  }
+  .videoContent{
+      padding-bottom: 20%;
+  }
+  
+  .secondVideo{
+      justify-content:left;
+      align-items: self-end;
+      left: 50%;
+      
+  }
