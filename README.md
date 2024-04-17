@@ -180,7 +180,7 @@ It is essentially a wrapper component that will display whatever is passed as a 
 ```
 import React, { Component } from 'react';
 import { Button } from 'antd';
-import PopUpModal from "../../../utils/previewActivty/PopUpModal";
+import PreviewActivityModal from "../../../utils/previewActivty/PreviewActivityModal";
 
 class MyActivity extends Component {
   constructor(props) {
@@ -200,10 +200,10 @@ class MyActivity extends Component {
         <Button onClick={()=> this.setState({ previewModal: true })}>Preview</Button>
         {
             this.state.previewModal &&
-                <PopUpModal onClose={this.displayPreview}>
+                <PreviewActivityModal onClose={this.displayPreview}>
                     <myActivityComponent
                         {...this.props}/>
-                </PopUpModal>
+                </PreviewActivityModal>
         }
     );
   }
