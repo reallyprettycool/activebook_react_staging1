@@ -237,10 +237,6 @@ class DragAndDropCreation extends Component {
         return (
             <>
                 <div className="ml-auto m-1">
-                    <button className={'btn btn-outline-secondary'} onClick={() => console.log(this.state)}>Tutorial
-                    </button>
-                </div>
-                <div className="m-1">
                     <button className={'btn btn-outline-info'} onClick={this.displayPreview}>Preview</button>
                 </div>
                 <div className="m-1">

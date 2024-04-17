@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import H5P from "./createContent/H5P";
 import MultipleChoiceCreation from "./createContent/multipleChoice/MultipleChoiceCreation";
+import InteractiveVideoCreation from "./createContent/interactiveVideo/InteractiveVideoCreation";
 import TextImages from "./createContent/textImages";
 import OtherActivities from "./createContent/OtherActivities";
 import CreatedActivities from "./createContent/CreatedActivities";
@@ -83,6 +84,8 @@ class CreateContent extends Component {
     switch (this.state.whatToShow) {
       case "multipleChoice":
         return <MultipleChoiceCreation />;
+      case "interactiveVideo":
+        return <InteractiveVideoCreation />;
       case "textImages":
         return <TextImages onValueEmitted={this.showItem} />;
       case "h5p":
@@ -109,6 +112,7 @@ class CreateContent extends Component {
     { name: "Text And Images", value: "textImages" },
     { name: "Multiple Choice", value: "multipleChoice" },
     { name: "Drag and Drop", value: "dragAndDrop" },
+    { name: "Interactive Video", value: "interactiveVideo"},
     { name: "H5P", value: "h5p" },
     { name: "Other Activities", value: "otherActivities" },
   ]
