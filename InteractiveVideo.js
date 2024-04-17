@@ -1,16 +1,13 @@
-import "./App.css";
-import ReactPlayer from "react-player";
-import React, { Component } from "react";
+
+import ReactPlayer from 'react-player';
+import React, { Component } from 'react';
 
 /** This is the Interactive Video Feature (Cropped Video Feature) which allows 
- * the instructor to crop their preferred video. 
+ * the instructor using the application to crop their preferred video via URL format. 
  * 
  * @Author: Shanice Bandoo
- * 
  */
-
-
-class App extends Component {
+class InteractiveVideo extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,6 +50,7 @@ class App extends Component {
                 player.pauseVideo();
             }
         }
+    };
 
         handleStopVideo2 = () => {
             const { stopSeconds } = this.state;
@@ -67,25 +65,14 @@ class App extends Component {
                     player.pauseVideo();
                 }
             }
-
-            // Reset stopSeconds after adding it to timeStamps
-            this.setState({ stopSeconds: 0 });
         };
 
         handleTimeUpdate = (currentTime) => {
             this.setState({ currentTime });
         };
 
-        handleActivitySelection = (timeStamp, activityType) => {
-            this.setState((prevState) => ({
-                activityChoices: {
-                    ...prevState.activityChoices,
-                    [timeStamp]: activityType
-                }
-            }));
-        };
 
-        render(); {
+        render() {
             return (
                 <div className="linkVideo">
                     <h2>Cropped Video</h2>
@@ -134,5 +121,5 @@ class App extends Component {
             );
         }
     }
-}
-export default App;
+
+export default InteractiveVideo;
